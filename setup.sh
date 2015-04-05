@@ -2,7 +2,7 @@
 
 # this is a script to setup a centos to connect NFS and LDAP all together.
 
-if [ $? -ne 1 ]; then
+if [ "$#" -ne 1 ]; then
    echo "Usage: $0 hostname"
    echo "eg. $0 Hormes"
    exit -1;
