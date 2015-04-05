@@ -2,7 +2,7 @@
 
 # this is a script to setup a centos to connect NFS and LDAP all together.
 
-if [ $? -ne 1 ] then
+if [ $? -ne 1 ]; then
    echo "Usage: $0 hostname"
    echo "eg. $0 Hormes"
    exit -1;
@@ -44,13 +44,16 @@ echo "192.168.100.100:/volume2/home_cluster   /home   nfs     defaults        0 
 
 # adduser speech and assign sudoer to speech
 id speech 2>&1 | grep "no such user" >/dev/null  && \
-   adduser speech
+   adduser speech || exit -1;
 
-echo "beyondASR" | passwd speech --stdin
-usermod -a -G wheel speech
+echo "beyondASR" | passwd speech --stdin || exit -1;
+usermod -a -G wheel speech  || exit -1;
 
 # stop root login
-sed -e 's%root:/root:/bin/bash%root:/root:/sbin/nologin%g' /etc/passwd > tmp
+sed -e 's%root:/root:/bin/bash%root:/root:/sbin/nologin%g' /etc/passwd > tmp || exit -1;
 cp -f tmp /etc/passwd
+
+rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt  || exit -1;
+rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm || exit -1;
 
 reboot
