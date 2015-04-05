@@ -8,6 +8,9 @@ if [ "$#" -ne 1 ]; then
    exit -1;
 fi
 
+# echo on
+set -x
+
 name=$1
 
 # setup hostname
@@ -17,7 +20,7 @@ hostname $name || exit -1;
 sed -e  's/HOST_NAME/$name/g' hosts  > /etc/hosts || exit -1;
 
 # setup LDAP 
-yum -y install openldap-clients nss-pam-ldapd || exit -1;
+yum -y install openldap-clients nss-pam-ldapd 
 
 authconfig --enableldap \
    --enableldapauth \
@@ -43,8 +46,7 @@ cp -f ca.crt    /etc/openldap/cacerts/ca.crt  || exit -1;
 echo "192.168.100.100:/volume2/home_cluster   /home   nfs     defaults        0 0" >> /etc/fstab  || exit -1;
 
 # adduser speech and assign sudoer to speech
-id speech 2>&1 | grep "no such user" >/dev/null  && \
-   adduser speech || exit -1;
+id speech 2>&1 | grep "no such user" >/dev/null  && adduser speech 
 
 echo "beyondASR" | passwd speech --stdin || exit -1;
 usermod -a -G wheel speech  || exit -1;
@@ -53,7 +55,7 @@ usermod -a -G wheel speech  || exit -1;
 sed -e 's%root:/root:/bin/bash%root:/root:/sbin/nologin%g' /etc/passwd > tmp || exit -1;
 cp -f tmp /etc/passwd
 
-rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt  || exit -1;
-rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm || exit -1;
+rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt  
+rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm 
 
 reboot
