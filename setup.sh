@@ -48,7 +48,8 @@ echo "192.168.100.100:/volume2/home_cluster   /home   nfs     defaults        0 
 # adduser speech and assign sudoer to speech
 id speech 2>&1 | grep "no such user" >/dev/null  && adduser speech 
 
-echo "beyondASR" | passwd speech --stdin || exit -1;
+echo "setting speech passwd"
+passwd speech
 usermod -a -G wheel speech  || exit -1;
 
 # stop root login
