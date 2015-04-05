@@ -8,12 +8,13 @@ if [ $? -ne 1 ] then
    exit -1;
 fi
 
-hostname=$1
+name=$1
 
 # setup hostname
-echo $hostname > /etc/hostname || exit -1;
+hostname $name || exit -1;
+
 # setup hosts
-sed -e  's/HOST_NAME/$hostname/g' hosts  > /etc/hosts || exit -1;
+sed -e  's/HOST_NAME/$name/g' hosts  > /etc/hosts || exit -1;
 
 # setup LDAP 
 yum -y install openldap-clients nss-pam-ldapd || exit -1;
