@@ -1,5 +1,7 @@
 #!/bin/bash
 
+yum install -y zlib-devel  atlas.x86_64 atlas-devel.x86_64
+
 svn co https://svn.code.sf.net/p/kaldi/code/trunk kaldi-trunk
 cd kaldi-trunk
 svn update
