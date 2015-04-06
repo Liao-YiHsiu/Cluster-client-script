@@ -6,4 +6,5 @@
  ./configure --prefix=/usr/local
  make
  make install
+ cd -
  rm -rf cgdb

@@ -13,3 +13,5 @@
 
  # install kaldi
  which copy-feats 2>/dev/null >/dev/null || ./install-kaldi.sh
+
+ source ~/.bashrc
