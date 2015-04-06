@@ -8,5 +8,5 @@ init 3
 init 5
 
 cp /etc/bashrc tmp
-echo "PATH=$PATH:/usr/local/cuda-7.0/bin" >> tmp
+echo "PATH=\$PATH:/usr/local/cuda-7.0/bin" >> tmp
 cp tmp /etc/bashrc
