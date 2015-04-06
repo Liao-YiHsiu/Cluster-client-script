@@ -1,5 +1,5 @@
 #!/bin/bash
- yum update
+ yum update -y
  yum install -y screen cgdb htop git kernel-devel kernel-headers gcc make
 
  # install cgdb
