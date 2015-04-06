@@ -20,7 +20,8 @@ home_r=$dir_r/$user_r
    hostname $name || exit -1;
 
 # setup hosts
-   sed -e  's/HOST_NAME/$name/g' hosts  > /etc/hosts || exit -1;
+   sed -e  's/HOST_NAME/$name/g' hosts  > tmp || exit -1;
+   cp tmp /etc/hosts || exit -1;
 
 # setup LDAP 
    yum -y install openldap-clients nss-pam-ldapd 
@@ -60,12 +61,12 @@ home_r=$dir_r/$user_r
    mkfs.ext4 /dev/${disk}1
    sleep 1
    uuid=`lsblk -f | grep ${disk}1 | tr -s ' ' |cut -d ' ' -f 3`
-   echo "UUID=$uuid $dir_r ext4 defaults,usrquota,grpquota 0 0" >> /etc/fstab  || exit -1;
+   cat /etc/fstab > tmp || exit -1;
+   echo "UUID=$uuid $dir_r ext4 defaults,usrquota,grpquota 0 0" >> tmp  || exit -1;
+   # setup NFS
+   echo "192.168.100.100:/volume2/home_cluster   /home   nfs     defaults        0 0" >> tmp  || exit -1;
+   cp tmp /etc/fstab || exit -1;
    mount /dev/${disk}1 $dir_r
-
-# setup NFS
-   echo "192.168.100.100:/volume2/home_cluster   /home   nfs     defaults        0 0" >> /etc/fstab  || exit -1;
-
 
 # adduser speech and assign sudoer to speech
    id $user_r 2>&1 | grep "no such user" >/dev/null  && adduser $user_r 
@@ -88,5 +89,10 @@ home_r=$dir_r/$user_r
 # add repository
    rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt  
    rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm 
+
+# shutdown nouveau for nvidia driver
+   cat /etc/modprobe.d/blacklist.conf > tmp
+   echo "blacklist nouveau" >> tmp
+   cp tmp /etc/modprobe.d/blacklist.conf
 
 reboot
