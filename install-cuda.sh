@@ -9,4 +9,7 @@ init 5
 
 cp /etc/bashrc tmp
 echo "PATH=\$PATH:/usr/local/cuda-7.0/bin" >> tmp
+echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/usr/local/cuda/lib64" >> tmp
 cp tmp /etc/bashrc
+
+ldconfig /usr/local/cuda/lib64
