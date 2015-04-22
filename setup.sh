@@ -36,6 +36,7 @@ home_r=$dir_r/$user_r
 #   ca for LDAP
    cp -f ldap.conf /etc/openldap/ldap.conf       || exit -1;
    cp -f ca.crt    /etc/openldap/cacerts/ca.crt  || exit -1;
+#  update-ca-trust 
 
 #   set login shell as bash
 #   /etc/sssd/sssd.conf [nss] -> override_shell = /bin/bash 
@@ -50,6 +51,15 @@ home_r=$dir_r/$user_r
 #        by self =xw
 # ...
 # --------------------------------------------------
+#
+# automatically create home directory.
+# synology -> /etc/exports
+# --------------------------------------------------
+# /volume1/home *(rw,async,no_wdelay,no_root_squash,insecure,insecure_locks, ...
+#                                                   ^^^^^^^^^
+# --------------------------------------------------
+# synology -> command line
+# synoldapserver --automount "192.168.100.100" "/volume1/home_cluster/"
 
 # mount select Disk to /home_local                                     
    mkdir -p $dir_r
