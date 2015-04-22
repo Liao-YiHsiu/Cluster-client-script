@@ -13,3 +13,5 @@ echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/usr/local/cuda/lib64" >> tmp
 cp tmp /etc/bashrc
 
 ldconfig /usr/local/cuda/lib64
+echo "/usr/local/cuda/lib64" > tmp
+cp tmp /etc/ld.so.conf.d/cuda-x86_64.conf
