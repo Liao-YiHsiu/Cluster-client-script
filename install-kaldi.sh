@@ -9,6 +9,8 @@ svn update
 cd tools ; make -j 12 ; cd -;
 cd src   ; ./configure && make depend -j 12 && make -j 12 ; cd -;
 
+chmod o+rx . -R
+
 now_dir=`pwd`
 
 cp /etc/bashrc tmp

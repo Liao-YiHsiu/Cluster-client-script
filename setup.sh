@@ -74,9 +74,13 @@ home_r=$dir_r/$user_r
    cat /etc/fstab > tmp || exit -1;
    echo "UUID=$uuid $dir_r ext4 defaults,usrquota,grpquota 0 0" >> tmp  || exit -1;
    # setup NFS
-   echo "192.168.100.100:/volume2/home_cluster   /home   nfs     defaults        0 0" >> tmp  || exit -1;
+   echo "192.168.100.100:/volume1/home_cluster   /home   nfs     defaults        0 0" >> tmp  || exit -1;
+   echo "192.168.100.100:/volume1/corpus   /corpus_tar   nfs     defaults        0 0" >> tmp  || exit -1;
    cp tmp /etc/fstab || exit -1;
    mount /dev/${disk}1 $dir_r
+
+   mkdir /corpus_tar
+   mkdir /corpus
 
 # adduser speech and assign sudoer to speech
    id $user_r 2>&1 | grep "no such user" >/dev/null  && adduser $user_r 
@@ -91,6 +95,12 @@ home_r=$dir_r/$user_r
    echo ". /etc/bashrc" > $home_r/.bashrc
    echo "[ -f ~/.bashrc ] && . ~/.bashrc" > $home_r/.bash_profile
    chown -R $user_r:$user_r $home_r
+ 
+# setup default bashrc
+   cp bashrc /etc/bashrc
+
+# setup welcome message
+   cp motd /etc/motd
 
 # stop root login
    sed -e 's%root:/root:/bin/bash%root:/root:/sbin/nologin%g' /etc/passwd > tmp || exit -1;
@@ -104,5 +114,10 @@ home_r=$dir_r/$user_r
    cat /etc/modprobe.d/blacklist.conf > tmp
    echo "blacklist nouveau" >> tmp
    cp tmp /etc/modprobe.d/blacklist.conf
+
+# setup crontab routine
+   echo "* * * * * flock -n /tmp/routine_lock `pwd`/routine.sh" > tmp
+   contab -u root tmp
+
 
 reboot
