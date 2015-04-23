@@ -117,7 +117,7 @@ home_r=$dir_r/$user_r
 
 # setup crontab routine
    echo "* * * * * flock -n /tmp/routine_lock `pwd`/routine.sh" > tmp
-   contab -u root tmp
+   crontab -u root tmp
 
 
 reboot
