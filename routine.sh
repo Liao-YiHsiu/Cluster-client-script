@@ -31,7 +31,7 @@ for file in /corpus_tar/*
 do
    unzip_file=$(tar -tf $file 2>/dev/null |head -n 1)
    [ -z "$unzip_file" ] && continue;
-   [ ! -e  /corpus/$unzip_file ] && tar zxvf $file -C /corpus
+   [ ! -e  /share/corpus/$unzip_file ] && tar zxvf $file -C /share/corpus
 
    chmod 755 $(find /corpus/$unzip_file -type d)
    chmod 644 $(find /corpus/$unzip_file -type f)
