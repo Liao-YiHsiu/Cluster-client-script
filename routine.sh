@@ -31,10 +31,26 @@ for file in /corpus_tar/*
 do
    unzip_file=$(tar -tf $file 2>/dev/null |head -n 1)
    [ -z "$unzip_file" ] && continue;
-   [ ! -e  /share/corpus/$unzip_file ] && tar zxvf $file -C /share/corpus
+   if [ ! -e  /share/corpus/$unzip_file ]; then 
+      tar zxvf $file -C /share/corpus
 
-   chmod 755 $(find /corpus/$unzip_file -type d)
-   chmod 644 $(find /corpus/$unzip_file -type f)
+      chmod 755 $(find /share/corpus/$unzip_file -type d)
+      chmod 644 $(find /share/corpus/$unzip_file -type f)
+   fi
 done
 # -------------------------------------------------------
 
+# -------------------------------------------------------
+# copy share data from NAS...
+for file in /share_tar/*
+do
+   unzip_file=$(tar -tf $file 2>/dev/null |head -n 1)
+   [ -z "$unzip_file" ] && continue;
+   if [ ! -e  /share/$unzip_file ]; then
+      tar zxvf $file -C /share
+
+      chmod 755 $(find /share/$unzip_file -type d)
+      chmod 644 $(find /share/$unzip_file -type f)
+   fi
+done
+# -------------------------------------------------------

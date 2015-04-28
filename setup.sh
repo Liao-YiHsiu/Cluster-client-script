@@ -76,6 +76,7 @@ home_r=$dir_r/$user_r
    # setup NFS
    echo "192.168.100.100:/volume1/home_cluster   /home   nfs     defaults        0 0" >> tmp  || exit -1;
    echo "192.168.100.100:/volume1/corpus   /corpus_tar   nfs     defaults        0 0" >> tmp  || exit -1;
+   echo "192.168.100.100:/volume1/share    /share_tar    nfs     defaults        0 0" >> tmp  || exit -1;
    cp tmp /etc/fstab || exit -1;
    mount /dev/${disk}1 $dir_r
 
