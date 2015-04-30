@@ -62,7 +62,7 @@ yum $YUM_OPTIONS install python-pip
 cd $CAFFE/python
 
 ## Install python-wrapper requirements
-for req in $(cat requirements.txt); do pip install $req; done
+for req in $(cat requirements.txt | grep -v "scikit-image"); do pip install $req; done
 pip install numpy
 easy_install -U scikit-image
 
