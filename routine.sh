@@ -56,7 +56,7 @@ done
 # -------------------------------------------------------
 
 # update github using svn
-su -l speech -s bash -c "cd ~/Cluster-client-script/; git pull"
-su -l speech -s bash -c "cd ~/Cluster-client-script/kaldi-trunk/; svn update; 
+su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/; git pull"
+su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi-trunk/; svn update; 
    cd src; ./configure && make depend -j 12 && make -j 12"
 
