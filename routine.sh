@@ -54,3 +54,19 @@ do
    fi
 done
 # -------------------------------------------------------
+
+# update github using svn
+su speech <( cat << ENDL
+cd ~
+
+cd Cluster-client-script
+git pull
+
+cd kaldi-trunk
+svn update
+cd src
+./configure && make depend -j 12 && make -j 12
+
+ENDL
+)
+
