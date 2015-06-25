@@ -61,10 +61,11 @@ make runtest
 yum $YUM_OPTIONS install python-pip
 cd $CAFFE/python
 
+pip install --upgrade pip
 ## Install python-wrapper requirements
-for req in $(cat requirements.txt | grep -v "scikit-image"); do pip install $req; done
-pip install numpy
-easy_install -U scikit-image
+for req in $(cat requirements.txt); do pip install --upgrade $req; done
+pip install --upgrade numpy
+#easy_install -U scikit-image
 
 ## install python-wrapper
 cd $CAFFE

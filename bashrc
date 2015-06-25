@@ -90,7 +90,24 @@ if ! shopt -q login_shell ; then # We're not a login shell
     unset -f pathmunge
 fi
 # vim:ts=4:sw=4
-PATH=$PATH:/home_local/speech/Cluster-client-script/kaldi-trunk/src/bin:/home_local/speech/Cluster-client-script/kaldi-trunk/tools/openfst/bin:/home_local/speech/Cluster-client-script/kaldi-trunk/tools/irstlm/bin/:/home_local/speech/Cluster-client-script/kaldi-trunk/src/fstbin/:/home_local/speech/Cluster-client-script/kaldi-trunk/src/gmmbin/:/home_local/speech/Cluster-client-script/kaldi-trunk/src/featbin/:/home_local/speech/Cluster-client-script/kaldi-trunk/src/lm/:/home_local/speech/Cluster-client-script/kaldi-trunk/src/sgmmbin/:/home_local/speech/Cluster-client-script/kaldi-trunk/src/sgmm2bin/:/home_local/speech/Cluster-client-script/kaldi-trunk/src/fgmmbin/:/home_local/speech/Cluster-client-script/kaldi-trunk/src/latbin/:/home_local/speech/Cluster-client-script/kaldi-trunk/src/nnetbin:/home_local/speech/Cluster-client-script/kaldi-trunk/src/nnet2bin/:/home_local/speech/Cluster-client-script/kaldi-trunk/src/kwsbin
+KALDI_PATH=/home_local/speech/Cluster-client-script/kaldi-trunk
+PATH=$PATH:$KALDI_PATH/tools/openfst/bin
+PATH=$PATH:$KALDI_PATH/tools/irstlm/bin
+PATH=$PATH:$KALDI_PATH/src/bin
+PATH=$PATH:$KALDI_PATH/src/fstbin
+PATH=$PATH:$KALDI_PATH/src/gmmbin
+PATH=$PATH:$KALDI_PATH/src/featbin
+PATH=$PATH:$KALDI_PATH/src/lm
+PATH=$PATH:$KALDI_PATH/src/sgmmbin
+PATH=$PATH:$KALDI_PATH/src/sgmm2bin
+PATH=$PATH:$KALDI_PATH/src/fgmmbin
+PATH=$PATH:$KALDI_PATH/src/latbin
+PATH=$PATH:$KALDI_PATH/src/nnetbin
+PATH=$PATH:$KALDI_PATH/src/nnet2bin
+PATH=$PATH:$KALDI_PATH/src/kwsbin
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$KALDI_PATH/tools/openfst/lib
+
 PATH=$PATH:/usr/local/cuda-7.0/bin
+
 PATH=$PATH:/home_local/speech/Cluster-client-script/libdnn/bin
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/home_local/speech/Cluster-client-script/kaldi-trunk/tools/openfst/lib
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
