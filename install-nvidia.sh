@@ -1,9 +1,13 @@
 #!/bin/bash
 
-[ ! -f NVIDIA-Linux-x86_64-346.47.run ] && \
-   wget http://tw.download.nvidia.com/XFree86/Linux-x86_64/346.47/NVIDIA-Linux-x86_64-346.47.run
-chmod +x NVIDIA-Linux-x86_64-346.47.run 
+url="http://us.download.nvidia.com/XFree86/Linux-x86_64/352.21/NVIDIA-Linux-x86_64-352.21.run"
+
+file=$(basename $url)
+
+[ ! -f $file ] && \
+   wget $url
+chmod +x $file
 service lightdm stop
 init 3
-./NVIDIA-Linux-x86_64-346.47.run
+./$file
 init 5
