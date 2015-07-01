@@ -67,6 +67,9 @@ home_r=$dir_r/$user_r
    lsblk -f
    echo "Select one disk to format(eg. sda):"                          
    read disk
+   echo "Format the selecting disk..."
+   echo "  you need to create one partition table"
+   echo "  and write the results to the disk."
    fdisk /dev/$disk || exit 1
    mkfs.ext4 /dev/${disk}1 || exit 1
    sleep 1
@@ -112,13 +115,13 @@ home_r=$dir_r/$user_r
    rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm 
 
 # shutdown nouveau for nvidia driver
-   cat /etc/modprobe.d/blacklist.conf > tmp
-   echo "blacklist nouveau" >> tmp
+#   cat /etc/modprobe.d/blacklist.conf > tmp
+   echo "blacklist nouveau" > tmp
    cp tmp /etc/modprobe.d/blacklist.conf
 
-# setup crontab routine
-#   echo "* * * * * flock -n /tmp/routine_lock `pwd`/routine.sh" > tmp
-#   crontab -u root tmp
+ setup crontab routine
+   echo "* * * * * flock -n /tmp/routine_lock $home_r/Cluster-client-script/routine.sh" > tmp
+   crontab -u root tmp
 
 
 reboot
