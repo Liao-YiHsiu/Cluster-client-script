@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 # this is a script to setup a centos to connect NFS and LDAP all together.
 
@@ -67,8 +67,8 @@ home_r=$dir_r/$user_r
    lsblk -f
    echo "Select one disk to format(eg. sda):"                          
    read disk
-   fdisk /dev/$disk
-   mkfs.ext4 /dev/${disk}1
+   fdisk /dev/$disk || exit 1
+   mkfs.ext4 /dev/${disk}1 || exit 1
    sleep 1
    uuid=`lsblk -f | grep ${disk}1 | tr -s ' ' |cut -d ' ' -f 3`
    cat /etc/fstab > tmp || exit -1;
@@ -78,7 +78,7 @@ home_r=$dir_r/$user_r
    echo "192.168.100.100:/volume1/corpus   /corpus_tar   nfs     defaults        0 0" >> tmp  || exit -1;
    echo "192.168.100.100:/volume1/share    /share_tar    nfs     defaults        0 0" >> tmp  || exit -1;
    cp tmp /etc/fstab || exit -1;
-   mount /dev/${disk}1 $dir_r
+   mount /dev/${disk}1 $dir_r || exit 1
 
    mkdir /corpus_tar
    mkdir /corpus
@@ -117,8 +117,8 @@ home_r=$dir_r/$user_r
    cp tmp /etc/modprobe.d/blacklist.conf
 
 # setup crontab routine
-   echo "* * * * * flock -n /tmp/routine_lock `pwd`/routine.sh" > tmp
-   crontab -u root tmp
+#   echo "* * * * * flock -n /tmp/routine_lock `pwd`/routine.sh" > tmp
+#   crontab -u root tmp
 
 
 reboot
