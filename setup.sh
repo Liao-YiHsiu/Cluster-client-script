@@ -119,7 +119,7 @@ home_r=$dir_r/$user_r
    echo "blacklist nouveau" > tmp
    cp tmp /etc/modprobe.d/blacklist.conf
 
- setup crontab routine
+# setup crontab routine
    echo "* * * * * flock -n /tmp/routine_lock $home_r/Cluster-client-script/routine.sh" > tmp
    crontab -u root tmp
 
