@@ -7,12 +7,14 @@
 # -------------------------------------------------------
 # setup home_local directory and quota for ldap users
 dir_r=/home_local/
+tmp=$(mktemp)
 
 set -x
 quotacheck -avug
 quotaon -auvg
 
 users=`ldapsearch -x | grep "dn.*uid=.*,cn=users" |cut -f 2 -d '=' |cut -f 1 -d ','`
+
 
 for user in $users
 do
@@ -60,3 +62,6 @@ su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/; git pull"
 su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi-trunk/; svn update; 
    cd src; ./configure && make depend -j 12 && make -j 12"
 
+# update hosts
+sed -e  "s/HOST_NAME//g" hosts  > $tmp || exit -1;
+cp $tmp /etc/hosts || exit -1;

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 url="http://us.download.nvidia.com/XFree86/Linux-x86_64/352.21/NVIDIA-Linux-x86_64-352.21.run"
 
