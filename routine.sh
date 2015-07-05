@@ -7,6 +7,7 @@
 # -------------------------------------------------------
 # setup home_local directory and quota for ldap users
 dir_r=/home_local/
+curr_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 tmp=$(mktemp)
 
 set -x
@@ -63,5 +64,5 @@ su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi-trunk/; svn updat
    cd src; ./configure && make depend -j 12 && make -j 12"
 
 # update hosts
-sed -e  "s/HOST_NAME//g" hosts  > $tmp || exit -1;
+sed -e  "s/HOST_NAME//g" $curr_dir/hosts  > $tmp || exit -1;
 cp $tmp /etc/hosts || exit -1;
