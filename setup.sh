@@ -29,7 +29,7 @@ tmp=$(mktemp)
 
    authconfig --enableldap \
       --enableldapauth \
-      --ldapserver=192.168.100.100 \
+      --ldapserver=Synology \
       --ldapbasedn="dc=DSM2411,dc=speech" \
       --enablemkhomedir \
       --update || exit -1;
@@ -78,9 +78,9 @@ tmp=$(mktemp)
    cat /etc/fstab > $tmp || exit -1;
    echo "UUID=$uuid $dir_r ext4 defaults,usrquota,grpquota 0 0" >> $tmp  || exit -1;
    # setup NFS
-   echo "192.168.100.100:/volume1/home_cluster   /home   nfs     defaults        0 0" >> $tmp  || exit -1;
-   echo "192.168.100.100:/volume1/corpus   /corpus_tar   nfs     defaults        0 0" >> $tmp  || exit -1;
-   echo "192.168.100.100:/volume1/share    /share_tar    nfs     defaults        0 0" >> $tmp  || exit -1;
+   echo "Synology:/volume1/home_cluster   /home   nfs     defaults        0 0" >> $tmp  || exit -1;
+   echo "Synology:/volume1/corpus   /corpus_tar   nfs     defaults        0 0" >> $tmp  || exit -1;
+   echo "Synology:/volume1/share    /share_tar    nfs     defaults        0 0" >> $tmp  || exit -1;
    cp $tmp /etc/fstab || exit -1;
    mount /dev/${disk}1 $dir_r || exit 1
 
@@ -128,7 +128,13 @@ tmp=$(mktemp)
    crontab -u root $tmp
 
 # setup quota for speech
+   quotacheck -avug
+   quotaon -auvg
    edquota -u speech
+
+# turn off selinux for key authentication
+   sed /etc/sysconfig/selinux -e 's/enforcing/disabled/g' > $tmp
+   cp $tmp /etc/sysconfig/selinux
 
 
 reboot

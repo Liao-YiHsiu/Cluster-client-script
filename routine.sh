@@ -68,3 +68,10 @@ su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi-trunk/; svn updat
 # update hosts
 sed -e  "s/HOST_NAME//g" $curr_dir/hosts  > $tmp || exit -1;
 cp $tmp /etc/hosts || exit -1;
+
+# updates bashrc
+cp $curr_dir/bashrc /etc/bashrc
+
+# update softwares
+yum upgrade -y
+

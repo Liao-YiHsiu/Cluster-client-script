@@ -3,6 +3,8 @@
 ## Require sudo to complete this installation
 YUM_OPTIONS="-y --enablerepo=epel"
 
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
 ## Install location
 CAFFE_PATH=/home_local/speech/Cluster-client-script
 CAFFE=$CAFFE_PATH/caffe
@@ -48,7 +50,7 @@ cd $CAFFE_PATH
 git clone https://github.com/BVLC/caffe.git
 
 ## Config installation by simpdanny's makefile
-CONFIG=/home/simpdanny/Makefile.config
+CONFIG=$DIR/Makefile.config
 cp $CONFIG $CAFFE
 cd $CAFFE
 

@@ -90,7 +90,8 @@ if ! shopt -q login_shell ; then # We're not a login shell
     unset -f pathmunge
 fi
 # vim:ts=4:sw=4
-KALDI_PATH=/home_local/speech/Cluster-client-script/kaldi-trunk
+SETUP_ROOT=/home_local/speech/Cluster-client-script/
+KALDI_PATH=$SETUP_ROOT/kaldi-trunk
 PATH=$PATH:$KALDI_PATH/tools/openfst/bin
 PATH=$PATH:$KALDI_PATH/tools/irstlm/bin
 PATH=$PATH:$KALDI_PATH/src/bin
@@ -109,5 +110,10 @@ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$KALDI_PATH/tools/openfst/lib
 
 PATH=$PATH:/usr/local/cuda-7.0/bin
 
-PATH=$PATH:/home_local/speech/Cluster-client-script/libdnn/bin
+PATH=$PATH:$SETUP_ROOT/libdnn/bin
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
+
+# setup caffe
+CAFFE=$SETUP_PATH/caffe
+PATH=$PATH:$CAFFE/build/tools
+PYTHONPATH=$CAFFE/python:$PYTHONPATH
