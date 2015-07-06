@@ -127,5 +127,8 @@ tmp=$(mktemp)
    echo "* * * * * flock -n /tmp/routine_lock $home_r/Cluster-client-script/routine.sh" > $tmp
    crontab -u root $tmp
 
+# setup quota for speech
+   edquota -u speech
+
 
 reboot
