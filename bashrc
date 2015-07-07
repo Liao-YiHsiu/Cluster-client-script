@@ -114,6 +114,6 @@ PATH=$PATH:$SETUP_ROOT/libdnn/bin
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
 
 # setup caffe
-CAFFE=$SETUP_PATH/caffe
+CAFFE=$SETUP_ROOT/caffe
 PATH=$PATH:$CAFFE/build/tools
 PYTHONPATH=$CAFFE/python:$PYTHONPATH
