@@ -13,8 +13,8 @@ tmp=$(mktemp)
 PATH=$PATH:/usr/sbin
 
 set -x
-quotacheck -avfug || true
-quotaon -auvg || true
+#quotacheck -avfug || true
+#quotaon -auvg || true
 
 users=`ldapsearch -x | grep "dn.*uid=.*,cn=users" |cut -f 2 -d '=' |cut -f 1 -d ','`
 

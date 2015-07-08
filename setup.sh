@@ -128,7 +128,7 @@ tmp=$(mktemp)
    crontab -u root $tmp
 
 # setup quota for speech
-   quotacheck -avug
+   quotacheck -avfmug
    quotaon -auvg
    edquota -u speech
 
