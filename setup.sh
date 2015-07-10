@@ -136,5 +136,9 @@ tmp=$(mktemp)
    sed /etc/sysconfig/selinux -e 's/enforcing/disabled/g' > $tmp
    cp $tmp /etc/sysconfig/selinux
 
+# set init level = 3
+  cp /etc/inittab $tmp
+  echo "id:3:initdefault:" >> $tmp
+  cp $tmp /etc/inittab
 
 reboot
