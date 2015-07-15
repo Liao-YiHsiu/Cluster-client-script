@@ -141,4 +141,10 @@ tmp=$(mktemp)
   echo "id:3:initdefault:" >> $tmp
   cp $tmp /etc/inittab
 
+# set max login to 16
+  cp /etc/ssh/sshd_config $tmp
+  echo "MaxSessions 17" >> $tmp
+  echo "MaxStartups 17:30:100" >> $tmp
+  cp $tmp /etc/ssh/sshd_config
+
 reboot
