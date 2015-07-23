@@ -63,9 +63,9 @@ done
 
 # update github using svn
 su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/; git pull"
-su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull;
-   cd tools; make -j $threads; cd -;
-   cd src; make -j $threads"
+su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep up-to-date || ( 
+   cd tools; make -j $threads; cd -; 
+   cd src; make -j $threads ) "
 
 # update hosts
 sed -e  "s/HOST_NAME//g" $curr_dir/hosts  > $tmp || exit -1;
