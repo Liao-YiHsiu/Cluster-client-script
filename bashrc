@@ -91,7 +91,7 @@ if ! shopt -q login_shell ; then # We're not a login shell
 fi
 # vim:ts=4:sw=4
 SETUP_ROOT=/home_local/speech/Cluster-client-script/
-KALDI_PATH=$SETUP_ROOT/kaldi-trunk
+KALDI_PATH=$SETUP_ROOT/kaldi
 PATH=$PATH:$KALDI_PATH/tools/openfst/bin
 PATH=$PATH:$KALDI_PATH/tools/irstlm/bin
 PATH=$PATH:$KALDI_PATH/src/bin
