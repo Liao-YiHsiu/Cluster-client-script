@@ -9,6 +9,7 @@
 dir_r=/home_local/
 curr_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 tmp=$(mktemp)
+threads=$(nproc)
 
 PATH=$PATH:/usr/sbin
 
@@ -62,8 +63,9 @@ done
 
 # update github using svn
 su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/; git pull"
-su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi-trunk/; svn update; 
-   cd src; ./configure && make depend -j 12 && make -j 12"
+su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull;
+   cd tools; make -j $threads; cd -;
+   cd src; ./configure && make depend -j $threads && make -j $threads"
 
 # update hosts
 sed -e  "s/HOST_NAME//g" $curr_dir/hosts  > $tmp || exit -1;

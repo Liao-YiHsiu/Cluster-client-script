@@ -1,15 +1,15 @@
 #!/bin/bash -ex
 
 tmp=$(mktemp)
+threads=$(nproc)
 
 sudo yum install -y zlib-devel  atlas.x86_64 atlas-devel.x86_64
 
-svn co https://svn.code.sf.net/p/kaldi/code/trunk kaldi-trunk
-cd kaldi-trunk
-svn update
+git clone https://github.com/kaldi-asr/kaldi
+cd kaldi
 
-cd tools ; make -j 12 ; cd -;
-cd src   ; ./configure && make depend -j 12 && make -j 12 ; cd -;
+cd tools ; make -j $threads ; cd -;
+cd src   ; ./configure && make depend -j $threads && make -j $threads ; cd -;
 
 chmod o+rx . -R
 
