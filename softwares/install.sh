@@ -4,3 +4,4 @@
  yum groupinstall -y "X Window System" "Desktop" "Desktop Platform"
  yum install -y gdm xclock
  yum install -y tree
+ yum install -y flac
