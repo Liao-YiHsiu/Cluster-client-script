@@ -78,4 +78,5 @@ cp $curr_dir/bashrc /etc/bashrc
 
 # update softwares
 yum upgrade -y
-
+# updates all pip packages
+pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
