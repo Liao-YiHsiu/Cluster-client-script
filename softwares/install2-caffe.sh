@@ -25,7 +25,7 @@ sudo cp $CUDNN_PATH/lib* $CUDA_PATH/lib64
 ## RHEL/CentOS 7 64-Bit ##
 cd /tmp
 wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
-rpm -ivh epel-release-7-5.noarch.rpm
+sudo rpm -ivh epel-release-7-5.noarch.rpm
 rm -f /tmp/epel-release-7-5.noarch.rpm
 
 ## Install general dependencies
