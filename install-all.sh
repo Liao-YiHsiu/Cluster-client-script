@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 for script in softwares/install*;
 do

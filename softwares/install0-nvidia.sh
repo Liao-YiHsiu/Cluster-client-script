@@ -7,7 +7,7 @@ file=$(basename $url)
 [ ! -f $file ] && \
    wget $url
 chmod +x $file
-service lightdm stop
-init 3
+service lightdm stop || true
+init 3 || true
 ./$file
 init 5
