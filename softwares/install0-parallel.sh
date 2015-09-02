@@ -4,4 +4,4 @@ wget https://build.opensuse.org/source/home:tange/parallel/parallel_20150622.tar
 tar zxvf parallel.tar.gz
 
 cd parallel*
-./configure && make && make install
+./configure && make && sudo make install

@@ -29,20 +29,20 @@ rpm -ivh epel-release-7-5.noarch.rpm
 rm -f /tmp/epel-release-7-5.noarch.rpm
 
 ## Install general dependencies
-yum $YUM_OPTIONS install protobuf-devel leveldb-devel snappy-devel opencv-devel boost-devel hdf5-devel
+sudo yum $YUM_OPTIONS install protobuf-devel leveldb-devel snappy-devel opencv-devel boost-devel hdf5-devel
 
 
 ## Install more dependencies
-yum $YUM_OPTIONS install gflags-devel glog-devel lmdb-devel
+sudo yum $YUM_OPTIONS install gflags-devel glog-devel lmdb-devel
 
 
 
 ## Install BLAS
 #yum $YUM_OPTIONS install atlas-devel
-yum $YUM_OPTIONS install openblas-devel.x86_64
+sudo yum $YUM_OPTIONS install openblas-devel.x86_64
 
 ## Install Python headers
-yum $YUM_OPTIONS install python-devel
+sudo yum $YUM_OPTIONS install python-devel
 
 ## Require git to clone Caffe on github
 #rm -rf $CAFFE
@@ -60,13 +60,13 @@ make test
 make runtest
 
 ## Install python-pip
-yum $YUM_OPTIONS install python-pip
+sudo yum $YUM_OPTIONS install python-pip
 cd $CAFFE/python
 
-pip install --upgrade pip
+sudo pip install --upgrade pip
 ## Install python-wrapper requirements
-for req in $(cat requirements.txt); do pip install --upgrade $req; done
-pip install --upgrade numpy
+for req in $(cat requirements.txt); do sudo pip install --upgrade $req; done
+sudo pip install --upgrade numpy
 #easy_install -U scikit-image
 
 ## install python-wrapper
