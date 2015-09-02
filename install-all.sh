@@ -2,5 +2,5 @@
 
 for script in softwares/install*;
 do
-   ./script
+   ./$script
 done
