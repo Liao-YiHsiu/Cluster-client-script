@@ -18,7 +18,6 @@ PATH=$PATH:/usr/sbin
 
 su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/; git pull"
 
-# TODO
 # update hosts
 # Synoloy ip = 192.168.100.97 - 192.168.100.100
 host_ip=$(ifconfig | grep 192 | tr -s ' ' | cut -d ' ' -f 3 | cut -d '.' -f4)
@@ -71,8 +70,8 @@ find /share_tar/ -iname "*.tgz" -o -iname "*.gz" | while read file; do
    rm -rf $dir/$unzip_file
    tar zxvf $file -C $dir
 
-   chmod 755 $(find $dir/$unzip_file -type d)
-   chmod 644 $(find $dir/$unzip_file -type f)
+   find $dir/$unzip_file -type d -exec chmod 755 {} \;
+   find $dir/$unzip_file -type f -exec chmod 644 {} \;
 
    touch $cache
 done
