@@ -119,12 +119,6 @@ tmp=$(mktemp)
    echo "blacklist nouveau" > $tmp
    cp $tmp /etc/modprobe.d/blacklist.conf
 
-# setup quota for speech
-   mount -o remount $dir_r
-   quotacheck -avfmug
-   quotaon -auvg
-   edquota -u speech || true
-
 # turn off selinux for key authentication
    sed /etc/sysconfig/selinux -e 's/enforcing/disabled/g' > $tmp
    cp $tmp /etc/sysconfig/selinux

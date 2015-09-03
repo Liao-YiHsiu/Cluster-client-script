@@ -1,5 +1,10 @@
 #!/bin/bash -ex
 
+# setup quota for speech
+   quotacheck -avfmug
+   quotaon -auvg
+   edquota -u speech || true
+
 for script in softwares_ui/install*;
 do
    dir=$(dirname $script)
