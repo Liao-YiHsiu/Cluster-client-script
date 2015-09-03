@@ -68,7 +68,7 @@ find /share_tar/ -iname "*.tgz" -o -iname "*.gz" | while read file; do
    fi
 
    rm -rf $dir/$unzip_file
-   tar zxvf $file -C $dir
+   tar zxvf $file -C $dir || continue;
 
    find $dir/$unzip_file -type d -exec chmod 755 {} \;
    find $dir/$unzip_file -type f -exec chmod 644 {} \;
