@@ -117,7 +117,7 @@ tmp=$(mktemp)
    cp $tmp /etc/modprobe.d/blacklist.conf
 
 # setup quota for speech
-   mount -o remount $home_r
+   mount -o remount $dir_r
    quotacheck -avfmug
    quotaon -auvg
    edquota -u speech
