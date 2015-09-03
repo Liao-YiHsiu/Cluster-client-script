@@ -17,4 +17,4 @@ do
    touch $cache_file
 done
 
-chown -R speech:speech /home_local/speech
+chown -R speech:speech /home_local/speech/Cluster-client-script
