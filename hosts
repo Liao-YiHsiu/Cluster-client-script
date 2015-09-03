@@ -1,5 +1,5 @@
-127.0.0.1       localhost localhost.localdomain localhost4 localhost4.localdomain4 HOST_NAME
-192.168.100.100 Synology 
+127.0.0.1       localhost localhost.localdomain localhost4 localhost4.localdomain4 
+192.168.100.IP Synology 
 192.168.100.101 Hormes
 192.168.100.102 Tigris
 192.168.100.103 Euphrates

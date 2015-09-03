@@ -79,18 +79,12 @@ tmp=$(mktemp)
    echo "UUID=$uuid $dir_r ext4 defaults,usrquota,grpquota 0 0" >> $tmp  || exit -1;
    # setup NFS
    echo "Synology:/volume1/home_cluster   /home   nfs     defaults        0 0" >> $tmp  || exit -1;
-   echo "Synology:/volume1/corpus   /corpus_tar   nfs     defaults        0 0" >> $tmp  || exit -1;
    echo "Synology:/volume1/share    /share_tar    nfs     defaults        0 0" >> $tmp  || exit -1;
    cp $tmp /etc/fstab || exit -1;
    mount /dev/${disk}1 $dir_r || exit 1
 
-   mkdir /corpus_tar
-   mkdir /corpus
-
 # adduser speech and assign sudoer to speech
    id $user_r 2>&1 | grep "no such user" >/dev/null  && adduser $user_r 
-   echo "setting $user_r passwd"
-   passwd $user_r
    usermod -a -G wheel $user_r || exit -1;
 
 # change speech home directory.                                        
@@ -99,6 +93,8 @@ tmp=$(mktemp)
    mkdir -p $home_r
    echo ". /etc/bashrc" > $home_r/.bashrc
    echo "[ -f ~/.bashrc ] && . ~/.bashrc" > $home_r/.bash_profile
+   mkdir -p $home_r/share
+   ln -sf $home_r/share /share
    chown -R $user_r:$user_r $home_r
  
 # setup default bashrc
@@ -115,17 +111,10 @@ tmp=$(mktemp)
    rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt  
    rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm 
 
-# create share and corpus directory for users
-   mkdir -p /share/corpus
-
 # shutdown nouveau for nvidia driver
 #   cat /etc/modprobe.d/blacklist.conf > tmp
    echo "blacklist nouveau" > $tmp
    cp $tmp /etc/modprobe.d/blacklist.conf
-
-# setup crontab routine
-   echo "* * * * * flock -n /tmp/routine_lock $home_r/Cluster-client-script/routine.sh" > $tmp
-   crontab -u root $tmp
 
 # setup quota for speech
    mount -o remount $home_r
@@ -148,4 +137,15 @@ tmp=$(mktemp)
   echo "MaxStartups 17:30:100" >> $tmp
   cp $tmp /etc/ssh/sshd_config
 
+# install some common tools first
+   yum update -y
+   yum install -y telnet screen cgdb htop git kernel-devel kernel-headers gcc make java-1.8.0-openjdk-devel.x86_64 graphviz
+   yum groupinstall -y "X Window System" "Desktop" "Desktop Platform"
+   yum install -y gdm xclock
+   yum install -y tree
+   yum install -y flac
+
+# setup crontab routine
+   echo "*/5 * * * * flock -n /tmp/routine_lock $home_r/Cluster-client-script/routine.sh &>/tmp/routine.log" > $tmp
+   crontab -u root $tmp
 reboot

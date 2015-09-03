@@ -4,10 +4,11 @@ url="http://us.download.nvidia.com/XFree86/Linux-x86_64/352.21/NVIDIA-Linux-x86_
 
 file=$(basename $url)
 
-[ ! -f $file ] && \
-   wget $url
+rm -rf $file 
+wget $url
 chmod +x $file
-sudo service lightdm stop || true
-sudo init 3 || true
-sudo ./$file
-sudo init 5
+service lightdm stop || true
+init 3 || true
+./$file
+init 5
+rm -rf $file

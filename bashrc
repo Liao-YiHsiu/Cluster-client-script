@@ -109,7 +109,6 @@ PATH=$PATH:$KALDI_PATH/src/kwsbin
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$KALDI_PATH/tools/openfst/lib
 
 PATH=$PATH:/usr/local/cuda-7.0/bin
-
 PATH=$PATH:$SETUP_ROOT/libdnn/bin
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 # routine jobs ... use crontab to execute
 
@@ -13,9 +13,23 @@ threads=$(nproc)
 
 PATH=$PATH:/usr/sbin
 
-set -x
 #quotacheck -avfug || true
 #quotaon -auvg || true
+
+su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/; git pull"
+
+# TODO
+# update hosts
+# Synoloy ip = 192.168.100.97 - 192.168.100.100
+host_ip=$(ifconfig | grep 192 | tr -s ' ' | cut -d ' ' -f 3 | cut -d '.' -f4)
+[ $host_ip == "" ] && host_ip=0
+syn_ip=$(( 100 - host_ip % 4 ))
+sed -e  "s/IP/$syn_ip/g" $curr_dir/hosts  > $tmp || exit -1;
+cp $tmp /etc/hosts || exit -1;
+
+# updates bashrc
+cp $curr_dir/bashrc /etc/bashrc
+
 
 users=`ldapsearch -x | grep "dn.*uid=.*,cn=users" |cut -f 2 -d '=' |cut -f 1 -d ','`
 
@@ -30,53 +44,52 @@ do
 done
 # -------------------------------------------------------
 
-
-# -------------------------------------------------------
-# copy corpus from NAS...
-for file in /corpus_tar/*
-do
-   unzip_file=$(tar -tf $file 2>/dev/null |head -n 1)
-   [ -z "$unzip_file" ] && continue;
-   if [ ! -e  /share/corpus/$unzip_file ]; then 
-      tar zxvf $file -C /share/corpus
-
-      chmod 755 $(find /share/corpus/$unzip_file -type d)
-      chmod 644 $(find /share/corpus/$unzip_file -type f)
-   fi
-done
-# -------------------------------------------------------
+# generate link to /share
+if [ ! -L /share ]; then
+   rm -rf /share
+   mkdir -p $dir_r/speech/share
+   ln -sf $dir_r/speech/share /share
+   chown speech:speech $dir_r/speech/share
+fi
 
 # -------------------------------------------------------
 # copy share data from NAS...
-for file in /share_tar/*
-do
+find /share_tar/ -iname "*.tgz" -o -iname "*.gz" | while read file; do
    unzip_file=$(tar -tf $file 2>/dev/null |head -n 1)
-   [ -z "$unzip_file" ] && continue;
-   if [ ! -e  /share/$unzip_file ]; then
-      tar zxvf $file -C /share
+   [ -z "$unzip_file" ] && continue;  #incorrect file
 
-      chmod 755 $(find /share/$unzip_file -type d)
-      chmod 644 $(find /share/$unzip_file -type f)
+   target=${file/share_tar/share}
+   dir=$(dirname $target)
+   base=$(basename $target)
+   cache=$dir/.$base
+
+   mkdir -p $dir
+   if [ -e $cache ]; then
+      [ $(stat -c %Y $cache) -gt $(stat -c %Y $file) ] && continue;
    fi
+
+   rm -rf $dir/$unzip_file
+   tar zxvf $file -C $dir
+
+   chmod 755 $(find $dir/$unzip_file -type d)
+   chmod 644 $(find $dir/$unzip_file -type f)
+
+   touch $cache
 done
 # -------------------------------------------------------
 
-# update github using svn
-su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/; git pull"
+# install all softwares
+(cd $curr_dir; ./install-all.sh) || exit -1
+
+# update kaldi
 su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep up-to-date || ( 
    cd tools; make -j $threads; cd -; 
    cd src; make -j $threads ) "
 
-# update hosts
-sed -e  "s/HOST_NAME//g" $curr_dir/hosts  > $tmp || exit -1;
-cp $tmp /etc/hosts || exit -1;
-
-rm -rf $tmp
-
-# updates bashrc
-cp $curr_dir/bashrc /etc/bashrc
-
 # update softwares
 yum upgrade -y
+
 # updates all pip packages
 pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
+
+rm -rf $tmp
