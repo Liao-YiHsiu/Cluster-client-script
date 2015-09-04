@@ -75,7 +75,7 @@ tmp=$(mktemp)
    echo "  you need to create one partition table"
    echo "  and write the results to the disk."
    fdisk /dev/$disk || exit 1
-   mkfs.xfs /dev/${disk}1 || exit 1
+   mkfs.xfs -f /dev/${disk}1 || exit 1
    sleep 1
    uuid=`lsblk -f | grep ${disk}1 | tr -s ' ' |cut -d ' ' -f 3`
    cat /etc/fstab > $tmp || exit -1;
