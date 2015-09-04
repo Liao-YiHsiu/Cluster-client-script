@@ -75,11 +75,11 @@ tmp=$(mktemp)
    echo "  you need to create one partition table"
    echo "  and write the results to the disk."
    fdisk /dev/$disk || exit 1
-   mkfs.ext4 /dev/${disk}1 || exit 1
+   mkfs.xfs /dev/${disk}1 || exit 1
    sleep 1
    uuid=`lsblk -f | grep ${disk}1 | tr -s ' ' |cut -d ' ' -f 3`
    cat /etc/fstab > $tmp || exit -1;
-   echo "UUID=$uuid $dir_r ext4 defaults,usrquota,grpquota 0 0" >> $tmp  || exit -1;
+   echo "UUID=$uuid $dir_r xfs defaults,usrquota,grpquota 0 0" >> $tmp  || exit -1;
    # setup NFS
    echo "Synology:/volume1/home_cluster   /home   nfs     defaults        0 0" >> $tmp  || exit -1;
    echo "Synology:/volume1/share    /share_tar    nfs     defaults        0 0" >> $tmp  || exit -1;
@@ -141,6 +141,7 @@ tmp=$(mktemp)
    yum install -y gdm xclock
    yum install -y tree
    yum install -y flac
+   yum install -y libattr-devel.x86_64
 
 # setup crontab routine
    echo "*/5 * * * * flock -n /tmp/routine_lock $home_r/Cluster-client-script/routine.sh &>/tmp/routine.log" > $tmp
