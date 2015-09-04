@@ -2,6 +2,7 @@
 ## Caffe installation on CentOS by simpdanny
 ## Require sudo to complete this installation
 YUM_OPTIONS="-y --enablerepo=epel"
+threads=$(nproc)
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
@@ -56,7 +57,7 @@ cp $CONFIG $CAFFE
 cd $CAFFE
 
 ## Compile Caffe and run all test
-make all
+make all -j $threads
 make test
 make runtest
 
@@ -72,5 +73,5 @@ pip install --upgrade numpy
 
 ## install python-wrapper
 cd $CAFFE
-make pycaffe
+make pycaffe -j $threads
 
