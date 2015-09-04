@@ -89,6 +89,7 @@ su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep
 yum upgrade -y
 
 # updates all pip packages
+pip install --upgrade pip
 pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
 
 rm -rf $tmp
