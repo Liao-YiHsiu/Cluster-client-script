@@ -144,6 +144,6 @@ tmp=$(mktemp)
    yum install -y libattr-devel.x86_64
 
 # setup crontab routine
-   echo "*/5 * * * * flock -n /tmp/routine_lock $home_r/Cluster-client-script/routine.sh &>/tmp/routine.log" > $tmp
+   echo "*/15 * * * * flock -n /tmp/routine_lock $home_r/Cluster-client-script/routine.sh &>/tmp/routine.log" > $tmp
    crontab -u root $tmp
 reboot
