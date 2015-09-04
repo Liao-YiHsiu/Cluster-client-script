@@ -32,7 +32,7 @@ tmp=$(mktemp)
 
    authconfig --enableldap \
       --enableldapauth \
-      --ldapserver=Synology \
+      --ldapserver=192.168.100.100 \
       --ldapbasedn="dc=DSM2411,dc=speech" \
       --enablemkhomedir \
       --update || exit -1;
