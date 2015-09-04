@@ -31,13 +31,11 @@ rpm -ivh epel-release-7-5.noarch.rpm || true
 rm -f /tmp/epel-release-7-5.noarch.rpm
 
 ## Install general dependencies
-yum $YUM_OPTIONS install protobuf-devel leveldb-devel snappy-devel opencv-devel boost-devel hdf5-devel
-
+yum $YUM_OPTIONS install protobuf-devel leveldb-devel snappy-devel opencv-devel boost-devel hdf5-devel 
+yum install -y libpng-devel.x86_64 freetype-devel.x86_64
 
 ## Install more dependencies
 yum $YUM_OPTIONS install gflags-devel glog-devel lmdb-devel
-
-
 
 ## Install BLAS
 yum $YUM_OPTIONS install atlas-devel
