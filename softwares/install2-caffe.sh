@@ -39,7 +39,7 @@ yum $YUM_OPTIONS install gflags-devel glog-devel lmdb-devel
 
 
 ## Install BLAS
-#yum $YUM_OPTIONS install atlas-devel
+yum $YUM_OPTIONS install atlas-devel
 yum $YUM_OPTIONS install openblas-devel.x86_64
 
 ## Install Python headers
