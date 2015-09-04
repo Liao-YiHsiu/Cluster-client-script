@@ -1,4 +1,5 @@
 #!/bin/bash -ex
+. /etc/bashrc
 
 for script in softwares_ui/install*;
 do
