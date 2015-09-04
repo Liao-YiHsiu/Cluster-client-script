@@ -40,7 +40,7 @@ do
       chown $user:users $dir_r/$user
    fi
    mount | grep home_local | grep xfs && \
-       xfs_quota -x -c "limit -u bsoft=400G bhard=500G isoft=400G ihard=500G $user" /home_local/ || \
+       xfs_quota -x -c "limit -u bsoft=400G bhard=500G $user" /home_local/ || \
        edquota -p speech -u $user
 done
 # -------------------------------------------------------
