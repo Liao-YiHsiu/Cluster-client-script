@@ -39,10 +39,14 @@ do
       mkdir -p $dir_r/$user
       chown $user:users $dir_r/$user
    fi
+
+   if [ "$users" == "loach" ]; then
+      continue;
+   fi
    mount | grep home_local && \
    mount | grep home_local | grep xfs && \
        xfs_quota -x -c "limit -u bsoft=400G bhard=500G $user" /home_local/ || \
-       edquota -p speech -u $user
+       edquota -p loach -u $user
 done
 # -------------------------------------------------------
 
