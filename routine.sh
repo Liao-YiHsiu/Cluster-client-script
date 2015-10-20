@@ -40,7 +40,7 @@ do
       chown $user:users $dir_r/$user
    fi
 
-   if [ "$users" == "loach" ]; then
+   if [ "$user" == "loach" ]; then
       continue;
    fi
    mount | grep home_local && \
