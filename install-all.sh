@@ -14,7 +14,12 @@ do
    dir=$(dirname $script)
    base=$(basename $script)
    cache_file=$dir/.$base
-   [ -e $cache_file ] || ./$script
+
+   if [ -e $cache_file ]; then
+      [ $(stat -c %Y $cache_file) -gt $(stat -c %Y $script) ] && continue;
+   fi
+
+   ./$script
    touch $cache_file
 done
 
