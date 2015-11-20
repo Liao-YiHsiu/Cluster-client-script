@@ -99,4 +99,7 @@ yum upgrade -y
 pip install --upgrade pip
 pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
 
+# updates theano
+pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
+
 rm -rf $tmp

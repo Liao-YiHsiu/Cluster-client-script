@@ -130,8 +130,10 @@ tmp=$(mktemp)
 
 # set max login to 16
   cp /etc/ssh/sshd_config $tmp
-  echo "MaxSessions 17" >> $tmp
-  echo "MaxStartups 17:30:100" >> $tmp
+  echo "MaxSessions 17"         >> $tmp
+  echo "MaxStartups 17:30:100"  >> $tmp
+  echo "TCPKeepAlive yes"       >> $tmp
+  echo "ClientAliveInterval 60" >> $tmp
   cp $tmp /etc/ssh/sshd_config
 
 # install some common tools first
