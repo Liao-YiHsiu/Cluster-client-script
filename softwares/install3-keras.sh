@@ -1,2 +1,2 @@
 #!/bin/bash -ex
-pip install keras
+pip2 install keras
