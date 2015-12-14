@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-url="http://us.download.nvidia.com/XFree86/Linux-x86_64/352.21/NVIDIA-Linux-x86_64-352.21.run"
+url="http://us.download.nvidia.com/XFree86/Linux-x86_64/352.63/NVIDIA-Linux-x86_64-352.63.run"
 
 file=$(basename $url)
 
