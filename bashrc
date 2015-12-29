@@ -116,3 +116,6 @@ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
 CAFFE=$SETUP_ROOT/caffe
 PATH=$PATH:$CAFFE/build/tools
 PYTHONPATH=$CAFFE/python:$PYTHONPATH
+
+# setup opencv
+export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/

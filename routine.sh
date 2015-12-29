@@ -70,6 +70,7 @@ find /share_tar/ -iname "*.tgz" -o -iname "*.gz" | while read file; do
    cache=$dir/.$base
 
    mkdir -p $dir
+   chown speech:speech $dir
    if [ -e $cache ]; then
       [ $(stat -c %Y $cache) -gt $(stat -c %Y $file) ] && continue;
    fi
