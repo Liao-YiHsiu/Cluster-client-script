@@ -94,13 +94,13 @@ su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep
    cd src; make -j $threads ) "
 
 # update softwares
-yum upgrade -y
-
-# updates all pip packages
-pip install --upgrade pip
-pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
-
-# updates theano
-pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
+#yum upgrade -y
+#
+## updates all pip packages
+#pip install --upgrade pip
+#pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
+#
+## updates theano
+#pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
 
 rm -rf $tmp
