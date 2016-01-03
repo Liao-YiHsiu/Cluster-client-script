@@ -59,6 +59,7 @@ cd $CAFFE
 #cd build
 #cmake -DBUILD_TIFF=ON -DBLAS=open .. 
 sed -e 's/\(boost_filesystem.*\)$/\0 opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs/' -i Makefile
+export CUDA_VISIBLE_DEVICES=0
 make all -j $threads
 make test -j $threads
 make runtest -j $threads
