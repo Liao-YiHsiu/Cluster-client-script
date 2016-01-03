@@ -1,5 +1,7 @@
 #!/bin/bash -xe
 
+rm -rf opencv*
+
 wget https://github.com/Itseez/opencv/archive/3.1.0.zip
 unzip 3.1.0.zip
 git clone https://github.com/Itseez/opencv_contrib.git 
