@@ -57,7 +57,7 @@ cd $CAFFE
 ## Compile Caffe and run all test
 mkdir build
 cd build
-cmake -DBUILD_TIFF=ON .. 
+cmake -DBUILD_TIFF=ON -DBLAS=open .. 
 make all -j $threads
 make test -j $threads
 make runtest -j $threads
