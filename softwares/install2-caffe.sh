@@ -50,7 +50,7 @@ cd $CAFFE_PATH
 git clone https://github.com/BVLC/caffe.git
 
 ## Config installation by simpdanny's makefile
-CONFIG=$DIR/Makefile.config
+CONFIG=$DIR/../Makefile.config
 cp $CONFIG $CAFFE
 cd $CAFFE
 
