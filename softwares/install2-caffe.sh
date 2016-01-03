@@ -50,14 +50,15 @@ cd $CAFFE_PATH
 git clone https://github.com/BVLC/caffe.git
 
 ## Config installation by simpdanny's makefile
-CONFIG=$DIR/../Makefile.config
+CONFIG=$DIR/Makefile.config
 cp $CONFIG $CAFFE
 cd $CAFFE
 
 ## Compile Caffe and run all test
-mkdir build
-cd build
-cmake -DBUILD_TIFF=ON -DBLAS=open .. 
+#mkdir build
+#cd build
+#cmake -DBUILD_TIFF=ON -DBLAS=open .. 
+sed -e 's/\(boost_filesystem.*\)$/\0 opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs/' -i Makefile
 make all -j $threads
 make test -j $threads
 make runtest -j $threads
@@ -73,6 +74,6 @@ pip install --upgrade numpy
 #easy_install -U scikit-image
 
 ## install python-wrapper
-cd $CAFFE/build
+cd $CAFFE
 make pycaffe -j $threads
 
