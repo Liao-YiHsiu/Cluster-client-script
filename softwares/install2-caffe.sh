@@ -16,11 +16,11 @@ CUDA_PATH=/usr/local/cuda
 
 ## Require v2 cudnn for cuda 7.0
 ## Require v1 cudnn for cuda 6.5 or below
-CUDNN_PATH=/share/cudnn-6.5-linux-x64-v2
+CUDNN_PATH=/share/cuda
 
 ## Install cuDNN
-cp $CUDNN_PATH/cudnn.h $CUDA_PATH/include
-cp $CUDNN_PATH/lib* $CUDA_PATH/lib64
+cp $CUDNN_PATH/include/cudnn.h $CUDA_PATH/include
+cp $CUDNN_PATH/lib64/lib* $CUDA_PATH/lib64
 
 ## Expand repository
 ## RHEL/CentOS 7 64-Bit ##
