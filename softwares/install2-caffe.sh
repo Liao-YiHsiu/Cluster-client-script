@@ -55,10 +55,12 @@ cp $CONFIG $CAFFE
 cd $CAFFE
 
 ## Compile Caffe and run all test
-FLAGS="-DBUILD_TIFF=ON -j $threads"
-make all $FLAGS
-make test $FLAGS
-make runtest $FLAGS
+mkdir build
+cd build
+cmake -DBUILD_TIFF=ON .. 
+make all -j $threads
+make test -j $threads
+make runtest -j $threads
 
 ## Install python-pip
 yum $YUM_OPTIONS install python-pip
@@ -71,6 +73,6 @@ pip install --upgrade numpy
 #easy_install -U scikit-image
 
 ## install python-wrapper
-cd $CAFFE
+cd $CAFFE/build
 make pycaffe -j $threads
 
