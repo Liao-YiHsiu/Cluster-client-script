@@ -55,9 +55,10 @@ cp $CONFIG $CAFFE
 cd $CAFFE
 
 ## Compile Caffe and run all test
-make all -j $threads
-make test
-make runtest
+FLAGS="-DBUILD_TIFF=ON -j $threads"
+make all $FLAGS
+make test $FLAGS
+make runtest $FLAGS
 
 ## Install python-pip
 yum $YUM_OPTIONS install python-pip
