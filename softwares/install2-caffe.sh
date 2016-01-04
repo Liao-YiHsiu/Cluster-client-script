@@ -41,6 +41,9 @@ yum $YUM_OPTIONS install gflags-devel glog-devel lmdb-devel
 yum $YUM_OPTIONS install atlas-devel
 yum $YUM_OPTIONS install openblas-devel.x86_64
 
+## Install jpeg
+yum $YUM_OPTIONS install libjpeg-turbo-devel.x86_64
+
 ## Install Python headers
 yum $YUM_OPTIONS install python-devel
 
