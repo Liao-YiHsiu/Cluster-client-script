@@ -130,10 +130,13 @@ tmp=$(mktemp)
 
 # set max login to 16
   cp /etc/ssh/sshd_config $tmp
-  echo "MaxSessions 17"         >> $tmp
-  echo "MaxStartups 17:30:100"  >> $tmp
-  echo "TCPKeepAlive yes"       >> $tmp
-  echo "ClientAliveInterval 60" >> $tmp
+  echo "MaxSessions 65"          >> $tmp
+  echo "MaxStartups 65:30:100"   >> $tmp
+  echo "TCPKeepAlive yes"        >> $tmp
+  echo "ClientAliveInterval 60"  >> $tmp
+  # speed up ssh connection
+  echo "UseDNS no"               >> $tmp
+  sed -ri "s/^.*GSSAPIAuthentication.*$/GSSAPIAuthentication no/" $tmp
   cp $tmp /etc/ssh/sshd_config
 
 # install some common tools first
