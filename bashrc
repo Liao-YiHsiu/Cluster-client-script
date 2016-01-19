@@ -118,5 +118,10 @@ CAFFE=$SETUP_ROOT/caffe
 PATH=$PATH:$CAFFE/build/tools
 PYTHONPATH=$CAFFE/python:$PYTHONPATH
 
+# setup manual scripts
+PATH=$PATH:$SETUP_ROOT/tools
+
+export PATH
+
 # setup opencv
 export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/
