@@ -10,7 +10,7 @@ fi
 
 path=$1
 
-hostlist=$(grep 192.168.100.1 /etc/hosts | cut -f2 -d' ' | sed -e "s/$HOSTNAME//g")
+hostlist=$(grep 192.168.100.1 /etc/hosts | cut -f2 -d' ' | grep -v Synology | sed -e "s/$HOSTNAME//g")
 tmpdir=$(mktemp -d)
 cmd="tar zcf - /home_local/$USER/$path "
 

@@ -16,7 +16,7 @@ if [ $# -eq 2 ]; then
    curr_dir=$2
 fi
 
-hostlist=$(grep 192.168.100.1 /etc/hosts | cut -f2 -d' ')
+hostlist=$(grep 192.168.100.1 /etc/hosts | cut -f2 -d' ' | grep -v Synology)
 
 for host in $hostlist;
 do
