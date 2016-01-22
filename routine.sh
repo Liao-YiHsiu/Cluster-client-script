@@ -80,6 +80,7 @@ find /share_tar/ -iname "*.tgz" -o -iname "*.gz" | while read file; do
 
    find $dir/$unzip_file -type d -exec chmod 755 {} \;
    find $dir/$unzip_file -type f -exec chmod 644 {} \;
+   chown speech:speech -R $dir/$unzip_file
 
    touch $cache
 done
