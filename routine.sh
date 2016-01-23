@@ -106,3 +106,4 @@ su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep
 #pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
 
 rm -rf $tmp
+echo "routine success!"
