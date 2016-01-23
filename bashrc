@@ -112,6 +112,7 @@ PATH=$PATH:/usr/local/cuda-7.0/bin
 PATH=$PATH:$SETUP_ROOT/libdnn/bin
 PATH=$PATH:/usr/local/MATLAB/R2015b/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home_local/speech/Cluster-client-script/opencv-3.1.0/build/lib
 
 # setup caffe
 CAFFE=$SETUP_ROOT/caffe
