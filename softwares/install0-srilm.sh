@@ -9,7 +9,7 @@ echo "Scripted by simpdanny 2016/01/20"
 
 #cp -r $SOURCE $TARGET
 #SRILM=$(realpath $TARGET/SRILM)
-tar -C /share -zxvf /share_tar/srilm.1.7.1
+tar -C /share -zxvf /share_tar/srilm.1.7.1.tgz
 SRILM=/share/SRILM
 cd $SRILM
 
