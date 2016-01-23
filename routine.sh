@@ -95,8 +95,8 @@ su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep
    cd src; make -j $threads ) "
 
 # update softwares
-yum update -y
-yum upgrade -y
+#yum update -y
+#yum upgrade -y
 #
 ## updates all pip packages
 #pip install --upgrade pip
