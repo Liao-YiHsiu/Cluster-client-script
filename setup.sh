@@ -148,6 +148,9 @@ tmp=$(mktemp)
    yum install -y flac
    yum install -y libattr-devel.x86_64
 
+# turn off gui
+systemctl set-default multi-user.target
+
 # setup crontab routine
    echo "*/15 * * * * flock -n /tmp/routine_lock $home_r/Cluster-client-script/routine.sh &>/tmp/routine.log" > $tmp
    crontab -u root $tmp
