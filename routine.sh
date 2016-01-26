@@ -86,13 +86,22 @@ find /share_tar/ -iname "*.tgz" -o -iname "*.gz" | while read file; do
 done
 # -------------------------------------------------------
 
+# clean /tmp that is one day before.
+day_before=$(($(date +%s) - 3600*24));
+for file in /tmp/*; do
+   [ $(stat -c %Y $file) -gt $day_before ] && continue;
+   rm -rf $file
+done
+# -------------------------------------------------------
+
+
 # install all softwares
 (cd $curr_dir; ./install-all.sh) || exit -1
 
 # update kaldi
 su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep up-to-date || ( 
    cd tools; make -j $threads; cd -; 
-   cd src; make -j $threads ) "
+   cd src; ./configure && make -j $threads depend && make -j $threads ) "
 
 # update softwares
 #yum update -y
