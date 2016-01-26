@@ -10,5 +10,6 @@ chmod +x $file
 service lightdm stop || true
 init 3 || true
 ./$file
-init 5
 rm -rf $file
+
+nvidia-smi -c 3
