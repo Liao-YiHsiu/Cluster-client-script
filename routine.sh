@@ -90,6 +90,7 @@ done
 day_before=$(($(date +%s) - 3600*24));
 for file in /tmp/*; do
    [ $(stat -c %Y $file) -gt $day_before ] && continue;
+   [[ $file == *"tmux"* ]] && continue;
    rm -rf $file
 done
 # -------------------------------------------------------
