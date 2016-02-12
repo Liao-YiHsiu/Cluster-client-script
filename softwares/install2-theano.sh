@@ -3,4 +3,4 @@ yum -y install python-devel python-nose python-setuptools gcc gcc-gfortran gcc-c
 easy_install pip
 pip install --upgrade numpy
 pip install --upgrade scipy
-pip install Theano
+pip install --upgrade Theano
