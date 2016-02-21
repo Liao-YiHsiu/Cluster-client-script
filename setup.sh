@@ -75,16 +75,16 @@ tmp=$(mktemp)
    echo "  you need to create one partition table"
    echo "  and write the results to the disk."
    fdisk /dev/$disk || exit 1
-   mkfs.xfs -f /dev/${disk}1 || exit 1
+   mkfs.xfs -f /dev/${disk}p1 || exit 1
    sleep 1
-   uuid=`lsblk -f | grep ${disk}1 | tr -s ' ' |cut -d ' ' -f 3`
+   uuid=`lsblk -f | grep ${disk}p1 | tr -s ' ' |cut -d ' ' -f 3`
    cat /etc/fstab > $tmp || exit -1;
    echo "UUID=$uuid $dir_r xfs defaults,usrquota,grpquota 0 0" >> $tmp  || exit -1;
    # setup NFS
    echo "Synology:/volume1/home_cluster   /home   nfs     defaults        0 0" >> $tmp  || exit -1;
    echo "Synology:/volume1/share    /share_tar    nfs     defaults        0 0" >> $tmp  || exit -1;
    cp $tmp /etc/fstab || exit -1;
-   mount /dev/${disk}1 $dir_r || exit 1
+   mount /dev/${disk}p1 $dir_r || exit 1
 
 # adduser speech and assign sudoer to speech
    id $user_r 2>&1 | grep "no such user" >/dev/null  && adduser $user_r 

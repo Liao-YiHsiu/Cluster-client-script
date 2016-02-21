@@ -1,8 +1,8 @@
 #!/bin/bash -ex
 
-rm -rf parallel.tar.gz
-wget https://build.opensuse.org/source/home:tange/parallel/parallel_20150622.tar.gz?rev=e9dfdac7027d423e855cbead29d1d689 -O parallel.tar.gz
-tar zxvf parallel.tar.gz
+rm -rf parallel.tar.bz2
+wget http://ftp.gnu.org/gnu/parallel/parallel-20160122.tar.bz2 -O parallel.tar.bz2
+tar -xjf parallel.tar.bz2
 
 cd parallel*
 ./configure && make && make install
