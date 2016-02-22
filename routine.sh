@@ -87,7 +87,7 @@ done
 # -------------------------------------------------------
 
 # clean /tmp that is one day before.
-day_before=$(($(date +%s) - 3600*24));
+day_before=$(($(date +%s) - 3600*24*14));
 for file in /tmp/*; do
    [ $(stat -c %Y $file) -gt $day_before ] && continue;
    [[ $file == *"tmux"* ]] && continue;
