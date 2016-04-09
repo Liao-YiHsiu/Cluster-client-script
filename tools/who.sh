@@ -10,4 +10,4 @@ fi
 user=$1
 
 echo "name: " `ldapsearch -x | grep "$user"  -C 1 | grep gecos | cut -d ' ' -f2 | base64 --decode`
-echo `ldapsearch -x | grep "$user"  -C 1 | grep mail 
+echo `ldapsearch -x | grep "$user"  -C 1 | grep mail`
