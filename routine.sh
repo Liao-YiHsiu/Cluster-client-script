@@ -102,9 +102,9 @@ done
 (cd $curr_dir; ./install-all.sh) || exit -1
 
 # update kaldi
-#su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep up-to-date || ( 
-#   cd tools; make clean; make -j $threads; cd -; 
-#   cd src; make clean && ./configure && make -j $threads depend && make -j $threads ) "
+su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep up-to-date || ( 
+   cd tools; make clean; make -j $threads; cd -; 
+   cd src; make clean && ./configure && make -j $threads depend && make -j $threads ) "
 
 # update softwares
 yum update -y
