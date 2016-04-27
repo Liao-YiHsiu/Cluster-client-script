@@ -107,11 +107,11 @@ done
 #   cd src; make clean && ./configure && make -j $threads depend && make -j $threads ) "
 
 # update softwares
-#yum update -y
-#yum upgrade -y
+yum update -y
+yum upgrade -y
 #
 ## updates all pip packages
-#pip install --upgrade pip
+pip install --upgrade pip
 #pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
 #
 ## updates theano
