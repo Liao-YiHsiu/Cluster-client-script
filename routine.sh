@@ -10,6 +10,7 @@ dir_r=/home_local/
 curr_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 tmp=$(mktemp)
 threads=$(nproc)
+threads=$((threads / 2))
 
 PATH=$PATH:/usr/sbin
 
