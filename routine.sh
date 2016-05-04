@@ -102,21 +102,27 @@ done
 # install all softwares
 (cd $curr_dir; ./install-all.sh) || exit -1
 
-# update kaldi
-su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep up-to-date || ( 
+DOM=$(date +%-d)
+HOD=$(date +%-H)
+
+# only update per month
+if [ $DOM == 1 ] && [ $HOD == 4 ] ; then
+   # update kaldi
+   su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep up-to-date || ( 
    cd tools; make clean; make -j $threads; cd -; 
    cd src; make clean && ./configure && make -j $threads depend && make -j $threads ) "
+   # update softwares
+   yum update -y
+   yum upgrade -y
+   #
+   ## updates all pip packages
+   pip install --upgrade pip
+   #pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
+   #
+   ## updates theano
+   #pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
+fi
 
-# update softwares
-yum update -y
-yum upgrade -y
-#
-## updates all pip packages
-pip install --upgrade pip
-#pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
-#
-## updates theano
-#pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
 
 rm -rf $tmp
 echo "routine success!"
