@@ -15,8 +15,7 @@ threads=$((threads / 2))
 PATH=$PATH:/usr/sbin
 
 #quotacheck -avfug || true
-#quotaon -auvg || true
-
+#quotaon -auvg || true 
 su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/; git pull"
 
 # update hosts
@@ -119,8 +118,10 @@ if [ $DOM == 1 ] && [ $HOD == 4 ] ; then
    pip install --upgrade pip
    #pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
    #
-   ## updates theano
+   ## update theano
    #pip install --upgrade --no-deps git+git://github.com/Theano/Theano.git
+   ## update Keras
+   pip install --upgrade Keras
 fi
 
 
