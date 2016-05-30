@@ -19,7 +19,7 @@ lock_file=${file}.lock
 tmp=$(mktemp)
 tmp2=$(mktemp)
 
-trap "rm -rf $lock_file $tmp $tmp2" EXIT
+trap "rm -rf $lock_file $tmp" EXIT
 
 tmux split-window -l 4 "watch \"cat $tmp2 && echo $host\"" || true
 
