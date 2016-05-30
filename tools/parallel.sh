@@ -15,7 +15,18 @@ if [ "$#" -eq 2 ]; then
    file=$2
 fi
 
+filename=$file
+file=$(readlink -f $file)
+
 lock_file=${file}.lock
+path=${file%/*}
+base=${file##*/}
+
+if [ -z $path ]; then
+   path=.
+fi
+
+vim_file=$path/.${base}.swp
 tmp=$(mktemp)
 tmp2=$(mktemp)
 
@@ -31,9 +42,16 @@ while true; do
    line=$(
       (flock -w -1 9;
 
-      head $file -n 1;
-      tail -n +2 $file  > $tmp ;
-      mv $tmp $file;
+       while true; 
+       do
+           [ -f $vim_file ] || break; 
+           echo "someone is editting $filename, check in 10 seconds latter" 1>&2;
+           sleep 10;
+       done
+
+       head $file -n 1;
+       tail -n +2 $file  > $tmp ;
+       mv $tmp $file;
 
       ) 9> $lock_file
    ) 
