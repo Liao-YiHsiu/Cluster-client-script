@@ -86,16 +86,6 @@ find /share_tar/ -iname "*.tgz" -o -iname "*.gz" | while read file; do
 done
 # -------------------------------------------------------
 
-# clean /tmp that is one day before.
-day_before=$(($(date +%s) - 3600*24*14));
-for file in /tmp/*; do
-   [ $(stat -c %Y $file) -gt $day_before ] && continue;
-   [[ $file == *"tmux"* ]] && continue;
-   # list file content before delete it!
-   ls -lat $file
-   rm -rf $file
-done
-# -------------------------------------------------------
 
 
 # install all softwares
@@ -106,6 +96,17 @@ HOD=$(date +%-H)
 
 # only update per month
 if [ $DOM == 1 ] && [ $HOD == 4 ] ; then
+   # clean /tmp that is one month ago
+   day_before=$(($(date +%s) - 3600*24*14));
+   for file in /tmp/*; do
+      [ $(stat -c %Y $file) -gt $day_before ] && continue;
+      [[ $file == *"tmux"* ]] && continue;
+      # list file content before delete it!
+      ls -lat $file
+      rm -rf $file
+   done
+   # -------------------------------------------------------
+
    # update kaldi
    su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/kaldi/; git pull | grep up-to-date || ( 
    cd tools; make clean; make -j $threads; cd -; 
