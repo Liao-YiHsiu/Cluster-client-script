@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-url="http://us.download.nvidia.com/XFree86/Linux-x86_64/352.63/NVIDIA-Linux-x86_64-352.63.run"
+url="http://us.download.nvidia.com/XFree86/Linux-x86_64/367.27/NVIDIA-Linux-x86_64-367.27.run"
 
 file=$(basename $url)
 
@@ -12,4 +12,4 @@ init 3 || true
 ./$file
 rm -rf $file
 
-nvidia-smi -c 3
+nvidia-smi -c 0
