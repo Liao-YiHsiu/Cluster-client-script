@@ -1,6 +1,6 @@
 #!/bin/bash -ex
-
-url="http://developer.download.nvidia.com/compute/cuda/7_0/Prod/local_installers/cuda_7.0.28_linux.run"
+url="http://developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.18_linux.run"
+#url="http://developer.download.nvidia.com/compute/cuda/7_0/Prod/local_installers/cuda_7.0.28_linux.run"
 file=$(basename $url)
 tmp=$(mktemp)
 
