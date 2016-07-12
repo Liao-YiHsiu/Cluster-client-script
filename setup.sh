@@ -154,4 +154,7 @@ systemctl set-default multi-user.target
 # setup crontab routine
    echo "*/15 * * * * flock -n /tmp/routine_lock $home_r/Cluster-client-script/routine.sh &>/tmp/routine.log; echo \$? > /tmp/routine.flag" > $tmp
    crontab -u root $tmp
-reboot
+
+sudo vim /etc/fstab
+
+
