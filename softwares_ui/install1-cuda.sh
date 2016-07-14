@@ -9,7 +9,7 @@ wget $url
 chmod +x $file
 init 3
 ./$file
-init 5
+init 3
 rm -rf $file
 
 ldconfig /usr/local/cuda/lib64
