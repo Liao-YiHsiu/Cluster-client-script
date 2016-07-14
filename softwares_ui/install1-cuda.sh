@@ -1,11 +1,14 @@
 #!/bin/bash -ex
-url="http://developer.download.nvidia.com/compute/cuda/7.5/Prod/local_installers/cuda_7.5.18_linux.run"
-#url="http://developer.download.nvidia.com/compute/cuda/7_0/Prod/local_installers/cuda_7.0.28_linux.run"
-file=$(basename $url)
+
+#url="http://developer.download.nvidia.com/compute/cuda/.5/Prod/local_installers/cuda_7.5.18_linux.run"
+
+pos="/home_local/speech/share/cuda_8.0.27_linux.run"
+
+file=$(basename $pos)
 tmp=$(mktemp)
 
 rm -rf $file
-wget $url
+cp $pos .
 chmod +x $file
 init 3
 ./$file

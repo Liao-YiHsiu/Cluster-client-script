@@ -109,6 +109,7 @@ PATH=$PATH:$KALDI_PATH/src/kwsbin
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$KALDI_PATH/tools/openfst/lib
 
 PATH=$PATH:/usr/local/cuda-7.5/bin
+#remember to change to /usr/local/cuda-8.0 
 PATH=$PATH:$SETUP_ROOT/libdnn/bin
 PATH=$PATH:/usr/local/MATLAB/R2015b/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/lib
