@@ -79,7 +79,7 @@ tmp=$(mktemp)
    sleep 1
    uuid=`lsblk -f | grep ${disk}p1 | tr -s ' ' |cut -d ' ' -f 3`
    cat /etc/fstab > $tmp || exit -1;
-   echo "UUID=$uuid $dir_r xfs defaults,usrquota,grpquota 0 0" >> $tmp  || exit -1;
+   echo "UUID=$uuid $dir_r xfs defaults,noauto,x-systemd.automount,usrquota,grpquota 0 0" >> $tmp  || exit -1;
    # setup NFS
    echo "Synology:/volume1/home_cluster   /home   nfs     defaults        0 0" >> $tmp  || exit -1;
    echo "Synology:/volume1/share    /share_tar    nfs     defaults        0 0" >> $tmp  || exit -1;
