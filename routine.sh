@@ -16,7 +16,11 @@ PATH=$PATH:/usr/sbin
 
 #quotacheck -avfug || true
 #quotaon -auvg || true 
-su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/; git pull"
+while true;
+do
+   su -l speech -s /bin/bash -c "cd ~/Cluster-client-script/; git pull" && break || true
+   sleep 10
+done
 
 # update hosts
 # Synoloy ip = 192.168.100.97 - 192.168.100.100
