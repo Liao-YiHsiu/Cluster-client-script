@@ -77,7 +77,7 @@ tmp=$(mktemp)
    fdisk /dev/$disk || exit 1
    mkfs.xfs -f /dev/${disk}p1 || exit 1
    sleep 1
-   uuid=`lsblk -f | grep ${disk}p1 | tr -s ' ' |cut -d ' ' -f 3`
+   uuid=`lsblk -f | grep ${disk}p1 | tr -s ' ' |cut -d ' ' -f 4 | uniq`
    cat /etc/fstab > $tmp || exit -1;
    echo "UUID=$uuid $dir_r xfs defaults,noauto,x-systemd.automount,usrquota,grpquota 0 0" >> $tmp  || exit -1;
    # setup NFS
@@ -111,8 +111,11 @@ tmp=$(mktemp)
    cp -f $tmp /etc/passwd
 
 # add repository
-   rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt  
-   rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm 
+# if the mirror of KEY is down -> find other mirrors mentioned in wiki
+   #rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt  
+   rpm --import http://repoforge.mirror.constant.com/RPM-GPG-KEY.dag.txt
+   #rpm -Uvh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm 
+   rpm -Uvh http://repoforge.mirror.constant.com/redhat/el7/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm
 
 # shutdown nouveau for nvidia driver
 #   cat /etc/modprobe.d/blacklist.conf > tmp
