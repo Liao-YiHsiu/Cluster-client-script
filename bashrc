@@ -130,3 +130,6 @@ export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/
 
 # setup SRILM
 export PATH=$PATH:/share/SRILM/bin/i686-m64-rhel
+
+# make CUDA and nvidia-smi use same GPU ID
+export CUDA_DEVICE_ORDER=PCI_BUS_ID
