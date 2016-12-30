@@ -133,3 +133,6 @@ export PATH=$PATH:/share/SRILM/bin/i686-m64-rhel
 
 # make CUDA and nvidia-smi use same GPU ID
 export CUDA_DEVICE_ORDER=PCI_BUS_ID
+
+# setup "go"
+export PATH=$PATH:/usr/local/go/bin
