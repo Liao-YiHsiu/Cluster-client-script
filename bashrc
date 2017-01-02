@@ -99,6 +99,7 @@ PATH=$PATH:$KALDI_PATH/src/fstbin
 PATH=$PATH:$KALDI_PATH/src/gmmbin
 PATH=$PATH:$KALDI_PATH/src/featbin
 PATH=$PATH:$KALDI_PATH/src/lm
+PATH=$PATH:$KALDI_PATH/src/lmbin
 PATH=$PATH:$KALDI_PATH/src/sgmmbin
 PATH=$PATH:$KALDI_PATH/src/sgmm2bin
 PATH=$PATH:$KALDI_PATH/src/fgmmbin
