@@ -120,7 +120,7 @@ if [ $DOM == 1 ] && [ $HOD == 4 ] ; then
    yum upgrade -y
    #
    ## updates all pip packages
-   pip install --upgrade pip
+   pip install --upgrade setuptools pip
    #pip freeze --local | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
    #
    ## update theano
