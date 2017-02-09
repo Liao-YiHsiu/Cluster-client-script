@@ -1,6 +1,8 @@
 #!/bin/bash
 
 curr_dir=`pwd`
+tmp=$(mktemp)
+trap "rm -f $tmp" EXIT
 
 if [ $# -ne 1 ] && [ $# -ne 2 ] ; then
    echo "Usage: $0 [command] <working-dir>"
@@ -18,10 +20,12 @@ fi
 
 hostlist=$(grep 192.168.100.1 /etc/hosts | cut -f2 -d' ' | grep -v Synology)
 
+count=0
 for host in $hostlist;
 do
-   echo "========================================"
-   echo "connecting to $host"
-   ssh -t $host "cd $curr_dir; $1"
-   echo
+   printf "echo '=========>  $host' ;" >> $tmp
+   printf "ssh -t -t $host \"cd $curr_dir; $1\"\n" >> $tmp
+   count=$((count+1))
 done
+
+cat $tmp | parallel  --will-cite  -j $count --work-dir `pwd`
