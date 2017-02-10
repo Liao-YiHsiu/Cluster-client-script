@@ -95,9 +95,6 @@ done
 # install all softwares
 (cd $curr_dir; ./install-all.sh) || exit -1
 
-DOM=$(date +%-d)
-HOD=$(date +%-H)
-
 # mount all other machines /home_local to /nfs
 hostlist=$(grep 192.168.100.1 /etc/hosts | cut -f2 -d' ' | grep -v Synology)
 for host in $hostlist;
@@ -110,6 +107,9 @@ do
       ping -c 1 $host && mount $host:/home_local /nfs/$host
    fi
 done
+
+DOM=$(date +%-d)
+HOD=$(date +%-H)
 
 # only update per month
 if [ $DOM == 1 ] && [ $HOD == 4 ] ; then
