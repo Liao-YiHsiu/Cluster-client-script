@@ -39,14 +39,4 @@ md5=$(echo $path | md5sum | cut -d ' ' -f 1)
 mv $path $tgt_dir/$md5
 
 # build soft links
-if [ "$(echo $path | grep '^/home/')" != "" ]; then
-   ln -sf $tgt_dir/$md5 $path
-else
-   exec.sh "ln -sf $tgt_dir/$md5 $path"
-fi
-
-# if the original dir is a soft link
-if [ -L $1 ]; then
-   rm $1
-   ln -sf $tgt_dir/$md5 $1
-fi
+ln -sf $tgt_dir/$md5 $1
