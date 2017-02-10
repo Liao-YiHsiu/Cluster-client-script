@@ -98,6 +98,19 @@ done
 DOM=$(date +%-d)
 HOD=$(date +%-H)
 
+# mount all other machines /home_local to /nfs
+hostlist=$(grep 192.168.100.1 /etc/hosts | cut -f2 -d' ' | grep -v Synology)
+for host in $hostlist;
+do
+   if [ "$(hostname | grep -i $host)" != "" ]; then
+      [ -L /nfs/$host ] || ln -sf /home_local /nfs/$host
+   elif [ "$(mount | grep /nfs/$host )" == "" ]; then
+      [ -d /nfs/$host ] || mkdir -p /nfs/$host
+      # if the host is alive then try to mount
+      ping -c 1 $host && mount $host:/home_local /nfs/$host
+   fi
+done
+
 # only update per month
 if [ $DOM == 1 ] && [ $HOD == 4 ] ; then
    # clean /tmp that is one month ago
