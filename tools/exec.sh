@@ -23,9 +23,8 @@ hostlist=$(grep 192.168.100.1 /etc/hosts | cut -f2 -d' ' | grep -v Synology)
 count=0
 for host in $hostlist;
 do
-   printf "echo '=========>  $host' ;" >> $tmp
-   printf "ssh $host \"cd $curr_dir; $cmd\"\n" >> $tmp
+   printf "echo '=========>  %s'; " "$host" >> $tmp
+   printf "ssh %s 'cd %s; %s';" "$host" "$curr_dir" "$cmd" >> $tmp
    count=$((count+1))
 done
-
 cat $tmp | parallel  --will-cite  -j $count --work-dir `pwd`
