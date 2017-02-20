@@ -1,6 +1,5 @@
 #!/bin/bash -ex
 
-apt-get install libcupti-dev
 
 url="https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.0.0-cp27-none-linux_x86_64.whl"
 whl=${url##*/}
