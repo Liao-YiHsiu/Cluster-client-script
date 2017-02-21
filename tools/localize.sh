@@ -39,4 +39,4 @@ md5=$(echo $path | md5sum | cut -d ' ' -f 1)
 mv $path $tgt_dir/$md5
 
 # build soft links
-ln -sf $tgt_dir/$md5 $1
+ln -sf $tgt_dir/$md5 ${1%/}
