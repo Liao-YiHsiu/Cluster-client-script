@@ -99,12 +99,16 @@ done
 hostlist=$(grep 192.168.100.1 /etc/hosts | cut -f2 -d' ' | grep -v Synology)
 for host in $hostlist;
 do
-   if [ "$(hostname | grep -i $host)" != "" ]; then
-      [ -L /nfs/$host ] || ln -sf /home_local /nfs/$host
-   elif [ "$(mount | grep /nfs/$host )" == "" ]; then
-      [ -d /nfs/$host ] || mkdir -p /nfs/$host
-      # if the host is alive then try to mount
-      ping -c 1 $host && mount $host:/home_local /nfs/$host
+   [ -d /nfs/$host ] || mkdir -p /nfs/$host
+
+   if [ "$(mount | grep /nfs/$host )" == "" ]; then
+      if [ "$(hostname | grep -i $host)" != "" ]; then
+         # bind /home_local to /nfs/$host
+         mount --bind /home_local /nfs/$host
+      else
+         # if the host is alive then try to mount
+         ping -c 1 $host && mount $host:/home_local /nfs/$host
+      fi
    fi
 done
 
