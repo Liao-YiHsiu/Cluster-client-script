@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use List::Util qw(min);
-use warnings;
 use LWP::Simple;
+use warnings;
 $common_dir    = "/home/speech/.gethost/";
 $lock_file     = $common_dir . ".lock";
 $status_file   = $common_dir . $ENV{"USER"};

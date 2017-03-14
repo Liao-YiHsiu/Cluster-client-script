@@ -1,6 +1,5 @@
 #!/usr/bin/env perl
 use warnings; #sed replacement for -w perl parameter
-use LWP::Simple;
 
 # In general, doing
 #  queue_battleship.pl some.log a b c is like running the command a b c in
@@ -21,12 +20,7 @@ use LWP::Simple;
 # the start and end times of the command at the beginning and end.
 # The reason why this is useful is so that we can create a different
 # version of this program that uses a queueing system instead.
-
-# use Data::Dumper;
-
-@ARGV < 2 && die "usage: queue_battleship.pl log-file command-line arguments...";
-
-
+#
 $max_jobs_run = 200;
 $jobstart = 1;
 $jobend = 1;
@@ -35,6 +29,20 @@ $ignored_opts = ""; # These will be ignored.
 $num_threads = 1;  # default: single thread
 $gpu = 0;          # default: don't request gpu
 $host_list = ".*"; # default: all hosts
+
+# use Data::Dumper;
+$usage = <<"END";
+usage: queue_battleship.pl [options] [JOB=1:10] log-file command-line arguments...
+
+  options:
+    --max-jobs-run <N> : number of jobs run concurrently. (default: $max_jobs_run)
+    --gpu <N>          : number of GPUs required by each job. (default: $gpu)
+    --num-threads <N>  : number of CPUs required by each job. (default: $num_threads)
+    --host-list "list" : submit jobs to assigned hosts (seperated by spaces, default: all hosts)
+      
+END
+
+@ARGV < 2 && die $usage;
 
 # First parse an option like JOB=1:4, and any
 # options that would normally be given to
@@ -120,45 +128,6 @@ for (my $x = 1; $x <= 2; $x++) { # This for-loop is to
 # if ($ignored_opts ne "") {
 #   print STDERR "queue_battleship.pl: Warning: ignoring options \"$ignored_opts\"\n";
 # }
-
-if ($max_jobs_run == -1) { # If --max-jobs-run option not set,
-                           # then work out the number of processors if possible,
-                           # and set it based on that.
-  $max_jobs_run = 0;
-  if (open(P, "</proc/cpuinfo")) {  # Linux
-    while (<P>) { if (m/^processor/) { $max_jobs_run++; } }
-    if ($max_jobs_run == 0) {
-      print STDERR "queue_battleship.pl: Warning: failed to detect any processors from /proc/cpuinfo\n";
-      $max_jobs_run = 10;  # reasonable default.
-    }
-    close(P);
-  } elsif (open(P, "sysctl -a |")) {  # BSD/Darwin
-    while (<P>) {
-      if (m/hw\.ncpu\s*[:=]\s*(\d+)/) { # hw.ncpu = 4, or hw.ncpu: 4
-        $max_jobs_run = $1;
-        last;
-      }
-    }
-    close(P);
-    if ($max_jobs_run == 0) {
-      print STDERR "queue_battleship.pl: Warning: failed to detect any processors from sysctl -a\n";
-      $max_jobs_run = 10;  # reasonable default.
-    }
-  } else {
-    # allow at most 32 jobs at once, on non-UNIX systems; change this code
-    # if you need to change this default.
-    $max_jobs_run = 32;
-  }
-  # The just-computed value of $max_jobs_run is just the number of processors
-  # (or our best guess); and if it happens that the number of jobs we need to
-  # run is just slightly above $max_jobs_run, it will make sense to increase
-  # $max_jobs_run to equal the number of jobs, so we don't have a small number
-  # of leftover jobs.
-  $num_jobs = $jobend - $jobstart + 1;
-  if ($num_jobs > $max_jobs_run && $num_jobs < 1.4 * $max_jobs_run) {
-    $max_jobs_run = $num_jobs;
-  }
-}
 
 $logfile = shift @ARGV;
 

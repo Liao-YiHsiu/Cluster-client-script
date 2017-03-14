@@ -1,6 +1,5 @@
 #!/usr/bin/env perl
 use warnings;
-use LWP::Simple;
 $common_dir    = "/home/speech/.gethost/";
 $lock_file     = $common_dir . ".lock";
 $status_file   = $common_dir . $ENV{"USER"};
