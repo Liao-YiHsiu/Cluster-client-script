@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use warnings;
-$common_dir    = "/home/loach/.gethost/";
+$common_dir    = "/home/speech/.gethost/";
 $lock_file     = $common_dir . ".lock";
 $status_file   = $common_dir . $ENV{"USER"};
 

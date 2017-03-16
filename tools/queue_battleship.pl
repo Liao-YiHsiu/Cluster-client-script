@@ -192,12 +192,12 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
     print F "#\n";
     close(F);
 
-    @array = split(' ', `/home/loach/cluster/tools/gethost.pl $gpu $num_threads "$host_list"`);
+    @array = split(' ', `gethost.pl $gpu $num_threads "$host_list"`);
     $host   = $array[0];
     $gpu_id = $array[1];
     END{
        if($host){
-          system("/home/loach/cluster/tools/puthost.pl $host $gpu $num_threads $gpu_id");
+          system("puthost.pl $host $gpu $num_threads $gpu_id");
        }
     }
     $env  = `export | tr '\n' ';'`;

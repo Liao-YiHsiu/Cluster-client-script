@@ -2,7 +2,7 @@
 use List::Util qw(min);
 use LWP::Simple;
 use warnings;
-$common_dir    = "/home/loach/.gethost/";
+$common_dir    = "/home/speech/.gethost/";
 $lock_file     = $common_dir . ".lock";
 $status_file   = $common_dir . $ENV{"USER"};
 $available_url = "http://140.112.21.35:5311/available";
