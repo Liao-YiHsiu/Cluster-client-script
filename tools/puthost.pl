@@ -1,45 +1,58 @@
 #!/usr/bin/env perl
 use warnings;
-$common_dir    = "/home/speech/.gethost/";
+$common_dir    = "/home/loach/.gethost/";
 $lock_file     = $common_dir . ".lock";
 $status_file   = $common_dir . $ENV{"USER"};
 
 # set real UID to effective UID
 $> = $<;
 
-@ARGV != 3 && die "usage: $0 gpus threads host";
+@ARGV != 4 && die "usage: $0 host gpus threads gpu_id";
 
-$gpu_num    = $ARGV[0];
-$thread_num = $ARGV[1];
-$host       = $ARGV[2];
+$ret_host   = $ARGV[0];
+$gpu_num    = $ARGV[1];
+$thread_num = $ARGV[2];
+$ret_gpu_id = $ARGV[3];
 
 open(LOCK, "+<$lock_file") || die "fail open $lock_file\n";
 until(flock(LOCK, 6)){
-   sleep(0.1);
+   select(undef, undef, undef, 0.01);
 }
 %stat = ();
 while(<LOCK>){
    $_ =~ s/\R//g;
    @array = split(' ', $_);
-   $stat{$array[0]}{time} = $array[1];
-   $stat{$array[0]}{cpus} = $array[2];
-   $stat{$array[0]}{gpus} = $array[3];
-   $stat{$array[0]}{used_cpus} = $array[4];
-   $stat{$array[0]}{used_gpus} = $array[5];
+   $host  = $array[0];
+   $stat{$host}{time} = $array[1];
+   $stat{$host}{cpus} = $array[2];
+   $stat{$host}{gpu}{0} = $array[3];
+   $stat{$host}{gpu}{1} = $array[4];
+   $stat{$host}{used_cpus} = $array[5];
+   $stat{$host}{used_gpu}{0} = $array[6];
+   $stat{$host}{used_gpu}{1} = $array[7];
 }
 
-$stat{$host}{cpus} += $thread_num;
-$stat{$host}{gpus} += $gpu_num;
-$stat{$host}{used_cpus} -= $thread_num;
-$stat{$host}{used_gpus} -= $gpu_num;
+$stat{$ret_host}{cpus} += $thread_num;
+$stat{$ret_host}{used_cpus} -= $thread_num;
 
-if($stat{$host}{used_cpus} == 0 && $stat{$host}{used_gpus} == 0){
-   $stat{$host}{time} = time();
+if($gpu_num == 1){
+   $stat{$ret_host}{gpu}{$ret_gpu_id} = 1;
+   $stat{$ret_host}{used_gpu}{$ret_gpu_id} = 0;
+}elsif($gpu_num == 2){
+   $stat{$ret_host}{gpu}{0} = 1;
+   $stat{$ret_host}{gpu}{1} = 1;
+   $stat{$ret_host}{used_gpu}{0} = 0;
+   $stat{$ret_host}{used_gpu}{1} = 0;
+}
+
+if($stat{$ret_host}{used_cpus} == 0 &&
+      $stat{$ret_host}{used_gpu}{0} == 0 && $stat{$ret_host}{used_gpu}{1} == 0){
+   $stat{$ret_host}{time} = time();
 }
 
 seek(LOCK, 0, 0);
 foreach my $key (sort keys %stat){
-   print LOCK "$key $stat{$key}{time} $stat{$key}{cpus} $stat{$key}{gpus} $stat{$key}{used_cpus} $stat{$key}{used_gpus}\n";
+   print LOCK "$key $stat{$key}{time} $stat{$key}{cpus} $stat{$key}{gpu}{0} $stat{$key}{gpu}{1} $stat{$key}{used_cpus} $stat{$key}{used_gpu}{0} $stat{$key}{used_gpu}{1}\n";
 }
 truncate(LOCK, tell(LOCK));
 
@@ -48,23 +61,30 @@ close(LOCK) || die "failed to close $lock_file\n";
 
 open(STATUS, "+<$status_file") || die "fail open $status_file\n";
 until(flock(STATUS, 6)){
-   sleep(0.1);
+   select(undef, undef, undef, 0.01);
 }
 
 %stat_me = ();
 while(<STATUS>){
    $_ =~ s/\R//g;
    @array = split(' ', $_);
-   $stat_me{$array[0]}{cpus} = $array[1];
-   $stat_me{$array[0]}{gpus} = $array[2];
+   $host = $array[0];
+   $stat_me{$host}{cpus} = $array[1];
+   $stat_me{$host}{gpu}{0} = $array[2];
+   $stat_me{$host}{gpu}{1} = $array[3];
 }
 
-$stat_me{$host}{cpus} -= $thread_num;
-$stat_me{$host}{gpus} -= $gpu_num;
+$stat_me{$ret_host}{cpus} -= $thread_num;
+if($gpu_num == 1){
+   $stat_me{$ret_host}{gpu}{$ret_gpu_id} = 0;
+}elsif($gpu_num == 2){
+   $stat_me{$ret_host}{gpu}{0} = 0;
+   $stat_me{$ret_host}{gpu}{1} = 0;
+}
 
 seek(STATUS, 0, 0);
 foreach my $key (sort keys %stat_me){
-   print STATUS "$key $stat_me{$key}{cpus} $stat_me{$key}{gpus}\n";
+   print STATUS "$key $stat_me{$key}{cpus} $stat_me{$key}{gpu}{0} $stat_me{$key}{gpu}{1}\n";
 }
 truncate(STATUS, tell(STATUS));
 

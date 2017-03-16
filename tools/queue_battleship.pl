@@ -192,9 +192,14 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
     print F "#\n";
     close(F);
 
-    my $host;
-
-    $host = `gethost.pl $gpu $num_threads "$host_list"`;
+    @array = split(' ', `/home/loach/cluster/tools/gethost.pl $gpu $num_threads "$host_list"`);
+    $host   = $array[0];
+    $gpu_id = $array[1];
+    END{
+       if($host){
+          system("/home/loach/cluster/tools/puthost.pl $host $gpu $num_threads $gpu_id");
+       }
+    }
     $env  = `export | tr '\n' ';'`;
     $pwd  = `pwd`;
 
@@ -207,6 +212,7 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
     open(B, "|ssh -T $host 'bash'") || die "queue_battleship.pl: Error opening shell command";
     printf B "%s\n", $env;
     print B "cd $pwd\n";
+    print B "export CUDA_VISIBLE_DEVICES=$gpu_id\n" if $gpu == 1;
     print B "( " . $cmd . ") 2>>$logfile >> $logfile\n";
     print B "exit\n";
     close(B);                   # If there was an error, exit status is in $?
@@ -225,8 +231,6 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
     print F "# Ended ($return_str) at " . $enddate . ", elapsed time " . ($endtime-$starttime) . " seconds\n";
     close(F);
 
-    system("puthost.pl $gpu $num_threads $host");
-
     exit($ret == 0 ? 0 : 1);
   } else {
     $pid[$jobid] = $childpid;
@@ -242,13 +246,6 @@ foreach $child (keys %active_pids) {
     $code = $?;
     if ($r == -1) { die "queue_battleship.pl: Error waiting for child process"; } # should never happen.
     if ($r != 0) { $fail[$jobid]=$code; $numfail++ if $code!=0; } # Completed successfully
-}
-
-END{
-   foreach $child (keys %active_pids) {
-      $jobid=$active_pids{$child};
-      kill -9, $pid[$jobid];
-   }
 }
 
 # Some sanity checks:
