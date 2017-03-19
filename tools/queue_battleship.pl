@@ -202,6 +202,7 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
     }
     $env  = `export | tr '\n' ';'`;
     $pwd  = `pwd`;
+    $pwd  =~  s/\R//g;
 
 
     open(F, ">>$logfile") || die "queue_battleship.pl: Error opening log file $logfile (again)";
@@ -209,14 +210,11 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
     close(F);
 
     # Pipe into bash.. make sure we're not using any other shell.
-    open(B, "|ssh -T $host 'bash'") || die "queue_battleship.pl: Error opening shell command";
-    printf B "%s\n", $env;
-    print B "cd $pwd\n";
-    print B "export CUDA_VISIBLE_DEVICES=$gpu_id\n" if $gpu == 1;
-    print B "( " . $cmd . ") 2>>$logfile >> $logfile\n";
-    print B "exit\n";
-    close(B);                   # If there was an error, exit status is in $?
-    $ret = $?;
+    $cmd_str = '';
+    $cmd_str = $cmd_str . "$env cd $pwd;";
+    $cmd_str = $cmd_str . "export CUDA_VISIBLE_DEVICES=$gpu_id;" if $gpu == 1;
+    $cmd_str = $cmd_str . "$cmd 2>>$logfile >> $logfile";
+    $ret = system("ssh -t -q $host '$cmd_str'");
 
     $lowbits = $ret & 127;
     $highbits = $ret >> 8;
