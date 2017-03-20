@@ -103,6 +103,7 @@ for (my $x = 1; $x <= 2; $x++) { # This for-loop is to
       }
     }
   }
+  @ARGV < 2 && die $usage;
   if ($ARGV[0] =~ m/^([\w_][\w\d_]*)+=(\d+):(\d+)$/) { # e.g. JOB=1:20
     $jobname = $1;
     $jobstart = $2;
@@ -124,11 +125,11 @@ for (my $x = 1; $x <= 2; $x++) { # This for-loop is to
   }
 }
 
+@ARGV < 2 && die $usage;
 # Users found this message confusing so we are removing it.
-# if ($ignored_opts ne "") {
-#   print STDERR "queue_battleship.pl: Warning: ignoring options \"$ignored_opts\"\n";
-# }
-
+if ($ignored_opts ne "") {
+  print STDERR "queue_battleship.pl: Warning: ignoring options \"$ignored_opts\"\n";
+}
 $logfile = shift @ARGV;
 
 if (defined $jobname && $logfile !~ m/$jobname/ &&
