@@ -29,6 +29,7 @@ $ignored_opts = ""; # These will be ignored.
 $num_threads = 1;  # default: single thread
 $gpu = 0;          # default: don't request gpu
 $host_list = ".*"; # default: all hosts
+$no_log_file = 0;  # default: use logfile
 
 # use Data::Dumper;
 $usage = <<"END";
@@ -39,6 +40,7 @@ usage: queue_battleship.pl [options] [JOB=1:10] log-file command-line arguments.
     --gpu <N>          : number of GPUs required by each job. (default: $gpu)
     --num-threads <N>  : number of CPUs required by each job. (default: $num_threads)
     --host-list "list" : submit jobs to assigned hosts (seperated by spaces, default: all hosts)
+    --no-log-file      : skip log-file(in command), use stdin, stdout instead(jobs # = 1)
       
 END
 
@@ -51,7 +53,7 @@ END
 for (my $x = 1; $x <= 2; $x++) { # This for-loop is to
   # allow the JOB=1:n option to be interleaved with the
   # options to qsub.
-  while (@ARGV >= 2 && $ARGV[0] =~ m:^-:) {
+  while (@ARGV >= 2 - $no_log_file && $ARGV[0] =~ m:^-:) {
     # parse any options that would normally go to qsub, but which will be ignored here.
     my $switch = shift @ARGV;
     if ($switch eq "-V") {
@@ -83,6 +85,8 @@ for (my $x = 1; $x <= 2; $x++) { # This for-loop is to
        }
     } elsif ($switch eq "--host-list"){
        $host_list = shift @ARGV;
+    } elsif ($switch eq "--no-log-file"){
+       $no_log_file = 1
     } else {
       my $argument = shift @ARGV;
       if ($argument =~ m/^--/) {
@@ -103,7 +107,7 @@ for (my $x = 1; $x <= 2; $x++) { # This for-loop is to
       }
     }
   }
-  @ARGV < 2 && die $usage;
+  @ARGV < 2 - $no_log_file && die $usage;
   if ($ARGV[0] =~ m/^([\w_][\w\d_]*)+=(\d+):(\d+)$/) { # e.g. JOB=1:20
     $jobname = $1;
     $jobstart = $2;
@@ -125,12 +129,17 @@ for (my $x = 1; $x <= 2; $x++) { # This for-loop is to
   }
 }
 
-@ARGV < 2 && die $usage;
+@ARGV < 2 - $no_log_file && die $usage;
 # Users found this message confusing so we are removing it.
 if ($ignored_opts ne "") {
   print STDERR "queue_battleship.pl: Warning: ignoring options \"$ignored_opts\"\n";
 }
-$logfile = shift @ARGV;
+
+if($no_log_file){
+   $jobstart != $jobend && die $usage;
+}else{
+   $logfile = shift @ARGV;
+}
 
 if (defined $jobname && $logfile !~ m/$jobname/ &&
     $jobend > $jobstart) {
@@ -185,13 +194,15 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
       $cmd =~ s/$jobname/$jobid/g;
       $logfile =~ s/$jobname/$jobid/g;
     }
-    system("mkdir -p `dirname $logfile` 2>/dev/null");
-    open(F, ">$logfile") || die "queue_battleship.pl: Error opening log file $logfile";
-    print F "# " . $cmd . "\n";
-    print F "# Started at " . `date`;
-    $starttime = `date +'%s'`;
-    print F "#\n";
-    close(F);
+    if($no_log_file == 0){
+       system("mkdir -p `dirname $logfile` 2>/dev/null");
+       open(F, ">$logfile") || die "queue_battleship.pl: Error opening log file $logfile";
+       print F "# " . $cmd . "\n";
+       print F "# Started at " . `date`;
+       $starttime = `date +'%s'`;
+       print F "#\n";
+       close(F);
+    }
 
     @array = split(' ', `gethost.pl $gpu $num_threads "$host_list"`);
     $host   = $array[0];
@@ -206,15 +217,21 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
     $pwd  =~  s/\R//g;
 
 
-    open(F, ">>$logfile") || die "queue_battleship.pl: Error opening log file $logfile (again)";
-    print F "# Connect to $host using gpu($gpu), cpu($num_threads)\n";
-    close(F);
+    if($no_log_file == 0){
+       open(F, ">>$logfile") || die "queue_battleship.pl: Error opening log file $logfile (again)";
+       print F "# Connect to $host using gpu($gpu), cpu($num_threads)\n";
+       close(F);
+    }
 
     # Pipe into bash.. make sure we're not using any other shell.
     $cmd_str = '';
     $cmd_str = $cmd_str . "$env cd $pwd;";
     $cmd_str = $cmd_str . "export CUDA_VISIBLE_DEVICES=$gpu_id;" if $gpu == 1;
-    $cmd_str = $cmd_str . "$cmd 2>>$logfile >> $logfile";
+    if($no_log_file){
+       $cmd_str = $cmd_str . "$cmd";
+    }else{
+       $cmd_str = $cmd_str . "$cmd 2>>$logfile >> $logfile";
+    }
     $ret = system("ssh -t -q $host '$cmd_str'");
 
     $lowbits = $ret & 127;
@@ -222,13 +239,15 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
     if ($lowbits != 0) { $return_str = "code $highbits; signal $lowbits" }
     else { $return_str = "code $highbits"; }
 
-    $endtime = `date +'%s'`;
-    open(F, ">>$logfile") || die "queue_battleship.pl: Error opening log file $logfile (again)";
-    $enddate = `date`;
-    chop $enddate;
-    print F "# Accounting: time=" . ($endtime - $starttime) . " threads=1\n";
-    print F "# Ended ($return_str) at " . $enddate . ", elapsed time " . ($endtime-$starttime) . " seconds\n";
-    close(F);
+    if($no_log_file == 0){
+       $endtime = `date +'%s'`;
+       open(F, ">>$logfile") || die "queue_battleship.pl: Error opening log file $logfile (again)";
+       $enddate = `date`;
+       chop $enddate;
+       print F "# Accounting: time=" . ($endtime - $starttime) . " threads=1\n";
+       print F "# Ended ($return_str) at " . $enddate . ", elapsed time " . ($endtime-$starttime) . " seconds\n";
+       close(F);
+    }
 
     exit($ret == 0 ? 0 : 1);
   } else {

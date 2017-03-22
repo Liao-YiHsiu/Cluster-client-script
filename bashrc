@@ -138,4 +138,4 @@ export CUDA_DEVICE_ORDER=PCI_BUS_ID
 # setup "go"
 export PATH=$PATH:/usr/local/go/bin
 
-alias queue_1gpu="queue_battleship.pl --gpu 1 --host-list $HOSTNAME"
+alias queue_1gpu="queue_battleship.pl --gpu 1 --host-list $HOSTNAME --no-log-file"
