@@ -14,10 +14,34 @@ $gpu_num    = $ARGV[1];
 $thread_num = $ARGV[2];
 $ret_gpu_id = $ARGV[3];
 
+if($gpu_num < 0){
+   die "gpu number is negative!";
+}
+
+if($thread_num <= 0){
+   die "thread-num should be larger than 0";
+}
+
 open(LOCK, "+<$lock_file") || die "fail open $lock_file\n";
 until(flock(LOCK, 6)){
    select(undef, undef, undef, 0.01);
 }
+
+open(STATUS, "+<$status_file") || die "fail open $status_file\n";
+until(flock(STATUS, 6)){
+   select(undef, undef, undef, 0.01);
+}
+
+%stat_me = ();
+while(<STATUS>){
+   $_ =~ s/\R//g;
+   @array = split(' ', $_);
+   $host = $array[0];
+   $stat_me{$host}{cpus} = $array[1];
+   $stat_me{$host}{gpu}{0} = $array[2];
+   $stat_me{$host}{gpu}{1} = $array[3];
+}
+
 %stat = ();
 while(<LOCK>){
    $_ =~ s/\R//g;
@@ -30,6 +54,15 @@ while(<LOCK>){
    $stat{$host}{used_cpus} = $array[5];
    $stat{$host}{used_gpu}{0} = $array[6];
    $stat{$host}{used_gpu}{1} = $array[7];
+}
+
+if($thread_num > $stat_me{$ret_host}{cpus}){
+   print STDERR "Error! Try to free more cpus($thread_num) than allocated($stat_me{$ret_host}{cpus}), release $stat_me{$ret_host}{cpus} cpus only\n";
+   $thread_num = $stat_me{$ret_host}{cpus};
+}
+
+if($thread_num == 0){
+   exit -1;
 }
 
 $stat{$ret_host}{cpus} += $thread_num;
@@ -59,20 +92,6 @@ truncate(LOCK, tell(LOCK));
 flock(LOCK, 8) || die "failed to unlock $lock_file\n";
 close(LOCK) || die "failed to close $lock_file\n";
 
-open(STATUS, "+<$status_file") || die "fail open $status_file\n";
-until(flock(STATUS, 6)){
-   select(undef, undef, undef, 0.01);
-}
-
-%stat_me = ();
-while(<STATUS>){
-   $_ =~ s/\R//g;
-   @array = split(' ', $_);
-   $host = $array[0];
-   $stat_me{$host}{cpus} = $array[1];
-   $stat_me{$host}{gpu}{0} = $array[2];
-   $stat_me{$host}{gpu}{1} = $array[3];
-}
 
 $stat_me{$ret_host}{cpus} -= $thread_num;
 if($gpu_num == 1){
