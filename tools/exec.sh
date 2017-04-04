@@ -24,7 +24,7 @@ count=0
 for host in $hostlist;
 do
    printf "echo '=========>  %s'; " "$host" >> $tmp
-   printf "ssh %s 'cd %s; %s';" "$host" "$curr_dir" "$cmd" >> $tmp
+   printf "ssh %s 'cd %s; %s';\n" "$host" "$curr_dir" "$cmd" >> $tmp
    count=$((count+1))
 done
 cat $tmp | parallel  --will-cite  -j $count --work-dir `pwd`
