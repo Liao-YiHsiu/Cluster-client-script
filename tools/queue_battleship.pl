@@ -207,11 +207,9 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
     @array = split(' ', `gethost.pl $gpu $num_threads "$host_list"`);
     $host   = $array[0];
     $gpu_id = $array[1];
-    END{
-       if($host){
-          system("puthost.pl $host $gpu $num_threads $gpu_id");
-       }
-    }
+
+    $SIG{INT} = $SIG{TERM} = sub { if($host){ system("puthost.pl $host $gpu $num_threads $gpu_id"); } };
+
     $env  = `export | tr '\n' ';'`;
     $pwd  = `pwd`;
     $pwd  =~  s/\R//g;
@@ -248,6 +246,8 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
        print F "# Ended ($return_str) at " . $enddate . ", elapsed time " . ($endtime-$starttime) . " seconds\n";
        close(F);
     }
+    system("puthost.pl $host $gpu $num_threads $gpu_id");
+    $host="";
 
     exit($ret == 0 ? 0 : 1);
   } else {
