@@ -16,5 +16,7 @@ $md5       = md5_hex($path);
 $lock_file = "/home/$ENV{'USER'}/.copy_to_tmp.$md5";
 $tmpdir    = "/tmp/$md5";
 
-system("exec.sh 'rm -rf $tmpdir'");
+system("exec.sh 'rm -rf $tmpdir' >/dev/null");
 system("rm -rf $lock_file");
+
+print STDOUT "$tmpdir\n";
