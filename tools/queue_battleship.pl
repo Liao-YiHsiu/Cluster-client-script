@@ -194,15 +194,8 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
       $cmd =~ s/$jobname/$jobid/g;
       $logfile =~ s/$jobname/$jobid/g;
     }
-    if($no_log_file == 0){
-       system("mkdir -p `dirname $logfile` 2>/dev/null");
-       open(F, ">$logfile") || die "queue_battleship.pl: Error opening log file $logfile";
-       print F "# " . $cmd . "\n";
-       print F "# Started at " . `date`;
-       $starttime = `date +'%s'`;
-       print F "#\n";
-       close(F);
-    }
+
+    $gethosttime = `date +'%s'`;
 
     @array = split(' ', `gethost.pl $gpu $num_threads "$host_list"`);
     $host   = $array[0];
@@ -214,10 +207,15 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
     $pwd  = `pwd`;
     $pwd  =~  s/\R//g;
 
-
     if($no_log_file == 0){
-       open(F, ">>$logfile") || die "queue_battleship.pl: Error opening log file $logfile (again)";
+       system("mkdir -p `dirname $logfile` 2>/dev/null");
+       open(F, ">$logfile") || die "queue_battleship.pl: Error opening log file $logfile";
+       print F "# " . $cmd . "\n";
+       print F "# Started at " . `date`;
+       $starttime = `date +'%s'`;
+       print F "# Wait " . ($starttime - $gethosttime) . " seconds to get host\n";
        print F "# Connect to $host using gpu($gpu), cpu($num_threads)\n";
+       print F "#\n";
        close(F);
     }
 
