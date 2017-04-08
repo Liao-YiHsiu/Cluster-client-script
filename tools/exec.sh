@@ -24,7 +24,8 @@ count=0
 for host in $hostlist;
 do
    printf "echo '=========>  %s'; " "$host" >> $tmp
-   printf "ssh %s 'cd %s; %s';\n" "$host" "$curr_dir" "$cmd" >> $tmp
+   printf "ping -c 1 $host >&/dev/null;" >> $tmp
+   printf "if [ \$? -eq 0 ]; then ssh %s 'cd %s; %s'; else echo '$host is not alive!'; fi;\n" "$host" "$curr_dir" "$cmd" >> $tmp
    count=$((count+1))
 done
 cat $tmp | parallel  --will-cite  -j $count --work-dir `pwd`
