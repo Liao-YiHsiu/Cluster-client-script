@@ -139,6 +139,7 @@ export CUDA_DEVICE_ORDER=PCI_BUS_ID
 export PATH=$PATH:/usr/local/go/bin
 
 alias queue_1gpu="queue_battleship.pl --gpu 1 --host-list $HOSTNAME --no-log-file"
+alias queue="queue_battleship.pl --no-log-file"
 
 _complete_queue()
 {
