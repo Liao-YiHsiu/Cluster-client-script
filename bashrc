@@ -139,3 +139,17 @@ export CUDA_DEVICE_ORDER=PCI_BUS_ID
 export PATH=$PATH:/usr/local/go/bin
 
 alias queue_1gpu="queue_battleship.pl --gpu 1 --host-list $HOSTNAME --no-log-file"
+
+_complete_queue()
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="--max-jobs-run --gpu --num-threads --host-list --no-log-file "
+    #if [[ ${cur} == -* ]]; then
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        #return 0
+    #fi 
+}
+complete -F _complete_queue -o bashdefault -o default queue_battleship.pl

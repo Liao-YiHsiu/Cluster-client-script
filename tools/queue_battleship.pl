@@ -291,9 +291,13 @@ if ($ret != 0) {
       $logfile =~ s/$jobname/$jobstart/; # only one numbered job, so replace name with
                                          # that job.
     }
-    print STDERR "queue_battleship.pl: job failed, log is in $logfile\n";
-    if ($logfile =~ m/JOB/) {
-      print STDERR "queue_battleship.pl: probably you forgot to put JOB=1:\$nj in your script.";
+    if(defined $logfile){
+       print STDERR "queue_battleship.pl: job failed, log is in $logfile\n";
+       if ($logfile =~ m/JOB/) {
+          print STDERR "queue_battleship.pl: probably you forgot to put JOB=1:\$nj in your script.";
+       }
+    }else{
+       print STDERR "queue_battleship.pl: job failed\n";
     }
   }
   else {
