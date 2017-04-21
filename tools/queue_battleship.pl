@@ -201,49 +201,66 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
     $host   = $array[0];
     $gpu_id = $array[1];
 
-    $SIG{INT} = $SIG{TERM} = sub { if($host){ system("puthost.pl $host $gpu $num_threads $gpu_id"); } };
+    $SIG{INT} = $SIG{TERM} = sub { if($host){ system("puthost.pl $host $gpu $num_threads $gpu_id");  $host=""; } };
 
     $env  = `export | tr '\n' ';'`;
     $pwd  = `pwd`;
     $pwd  =~  s/\R//g;
 
-    if($no_log_file == 0){
+
+    if($no_log_file == 1){
+       # Pipe into bash.. make sure we're not using any other shell.
+       $cmd_str = '';
+       $cmd_str = $cmd_str . "$env cd $pwd;";
+       $cmd_str = $cmd_str . "export CUDA_VISIBLE_DEVICES=$gpu_id;" if $gpu == 1;
+       $cmd_str = $cmd_str . "$cmd";
+
+       $ret = system("ssh -t -q $host '$cmd_str'");
+    }else{
        system("mkdir -p `dirname $logfile` 2>/dev/null");
        open(F, ">$logfile") || die "queue_battleship.pl: Error opening log file $logfile";
-       print F "# " . $cmd . "\n";
-       print F "# Started at " . `date`;
        $starttime = `date +'%s'`;
+       print F "######################\n";
        print F "# Wait " . ($starttime - $gethosttime) . " seconds to get host\n";
-       print F "# Connect to $host using gpu($gpu), cpu($num_threads)\n";
-       print F "#\n";
+       print F "######################\n";
        close(F);
+
+       my $queue_scriptfile = $logfile . ".sh";
+       $queue_scriptfile = `touch $queue_scriptfile && readlink -f $queue_scriptfile`;
+       $queue_scriptfile =~ s/\R//g; 
+
+       open(Q, ">$queue_scriptfile") || die "Failed to write to $queue_scriptfile";
+
+       print Q "#!/bin/bash\n";
+       print Q "$env \n";
+       print Q "cd $pwd\n";
+       print Q "export CUDA_VISIBLE_DEVICES=$gpu_id\n" if $gpu == 1;
+       print Q "( echo '#' Running on \`hostname\`\n";
+       print Q "  echo '#' Started at \`date\`\n";
+       print Q "  echo -n '# '; cat <<EOF\n";
+       print Q "$cmd\n"; # this is a way of echoing the command into a comment in the log file,
+       print Q "EOF\n"; # without having to escape things like "|" and quote characters.
+       print Q ") >>$logfile\n";
+       print Q "time1=\`date +\"%s\"\`\n";
+       print Q " ( $cmd ) 2>>$logfile >>$logfile\n";
+       print Q "ret=\$?\n";
+       print Q "time2=\`date +\"%s\"\`\n";
+       print Q "echo '#' Accounting: time=\$((\$time2-\$time1)) threads=$num_threads gpu=$gpu gpu_id=$gpu_id >>$logfile\n";
+       print Q "echo '#' Finished at \`date\` with status \$ret >>$logfile\n";
+       print Q "exit \$[\$ret ? 1 : 0]\n"; 
+       if (!close(Q)) { # close was not successful... || die "Could not close script file $shfile";
+          die "Failed to close the script file (full disk?)";
+       }
+
+       $ret = system("ssh -t -q $host 'bash $queue_scriptfile'");
     }
 
-    # Pipe into bash.. make sure we're not using any other shell.
-    $cmd_str = '';
-    $cmd_str = $cmd_str . "$env cd $pwd;";
-    $cmd_str = $cmd_str . "export CUDA_VISIBLE_DEVICES=$gpu_id;" if $gpu == 1;
-    if($no_log_file){
-       $cmd_str = $cmd_str . "$cmd";
-    }else{
-       $cmd_str = $cmd_str . "$cmd 2>>$logfile >> $logfile";
-    }
-    $ret = system("ssh -t -q $host '$cmd_str'");
 
     $lowbits = $ret & 127;
     $highbits = $ret >> 8;
     if ($lowbits != 0) { $return_str = "code $highbits; signal $lowbits" }
     else { $return_str = "code $highbits"; }
 
-    if($no_log_file == 0){
-       $endtime = `date +'%s'`;
-       open(F, ">>$logfile") || die "queue_battleship.pl: Error opening log file $logfile (again)";
-       $enddate = `date`;
-       chop $enddate;
-       print F "# Accounting: time=" . ($endtime - $starttime) . " threads=1\n";
-       print F "# Ended ($return_str) at " . $enddate . ", elapsed time " . ($endtime-$starttime) . " seconds\n";
-       close(F);
-    }
     system("puthost.pl $host $gpu $num_threads $gpu_id");
     $host="";
 
