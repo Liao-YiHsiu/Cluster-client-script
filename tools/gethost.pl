@@ -64,36 +64,45 @@ while($ret_host eq ""){
 
    # get server status
    $contents = get($available_url);
-   $contents =~ s/\A.*?\n//g;
-   @ret_arr  = ();
-   @ret_gpu_arr = ();
-   foreach (split('\n', $contents)){
-      @array = split('\t', $_);
-      $host = $array[0];
-      $host_cpu_num = $array[1];
-     
-      # initialize status
-      if(not exists($stat{$host})){
-         $stat{$host}{time} = $now;
-         $stat{$host}{cpus} = $array[2];
-         $stat{$host}{gpu0} = $array[3];
-         $stat{$host}{gpu1} = $array[4];
-         $stat{$host}{used_cpus} = 0;
-         $stat{$host}{used_gpu0} = 0;
-         $stat{$host}{used_gpu1} = 0;
+   if(defined($contents)){
+      $contents =~ s/\A.*?\n//g;
+      foreach (split('\n', $contents)){
+         @array = split('\t', $_);
+         $host = $array[0];
+         $host_cpu_num = $array[1];
+         $stat{$host}{cpu_all} = $host_cpu_num;
 
-      # update status
-      }elsif($stat{$host}{used_cpus} == 0 && 
+         # initialize status
+         if(not exists($stat{$host})){
+            $stat{$host}{time} = $now;
+            $stat{$host}{cpus} = $array[2];
+            $stat{$host}{gpu0} = $array[3];
+            $stat{$host}{gpu1} = $array[4];
+            $stat{$host}{used_cpus} = 0;
+            $stat{$host}{used_gpu0} = 0;
+            $stat{$host}{used_gpu1} = 0;
+
+            # update status
+         }elsif($stat{$host}{used_cpus} == 0 && 
             $stat{$host}{used_gpu0} == 0 &&
             $stat{$host}{used_gpu1} == 0 &&
             $stat{$host}{time} + $cached_time < $now){
-         $stat{$host}{time} = $now;
-         $stat{$host}{cpus} = $array[2];
-         $stat{$host}{gpu0} = $array[3];
-         $stat{$host}{gpu1} = $array[4];
+            $stat{$host}{time} = $now;
+            $stat{$host}{cpus} = $array[2];
+            $stat{$host}{gpu0} = $array[3];
+            $stat{$host}{gpu1} = $array[4];
+         }
       }
+   }
 
+   @ret_arr  = ();
+   @ret_gpu_arr = ();
+   foreach my $host(keys %stat){
       if($host =~ /$host_list/){
+         $host_cpu_num = 0;
+         if(exists($stat{cpu_all})){
+            $host_cpu_num = $stat{cpu_all};
+         }
          $host_cpu = $stat{$host}{cpus} - $host_cpu_num * $preserve_ratio; 
 
          # requesting cpu jobs only, keep some cpus for gpu jobs
