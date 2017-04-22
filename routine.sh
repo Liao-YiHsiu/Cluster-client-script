@@ -65,22 +65,22 @@ fi
 # -------------------------------------------------------
 # copy share data from NAS...
 find /share_tar/ -iname "*.tgz" -o -iname "*.gz" | while read file; do
-   unzip_file=$(tar -tf $file 2>/dev/null |head -n 1)
-   [ -z "$unzip_file" ] && continue;  #incorrect file
-
    target=${file/share_tar/share}
    dir=$(dirname $target)
    base=$(basename $target)
    cache=$dir/.$base
 
-   mkdir -p $dir
-   chown speech:speech $dir
    if [ -e $cache ]; then
       [ $(stat -c %Y $cache) -gt $(stat -c %Y $file) ] && continue;
    fi
+   mkdir -p $dir
+   chown speech:speech $dir
+
+   unzip_file=$(tar -tf $file 2>/dev/null |head -n 1)
+   [ -z "$unzip_file" ] && continue;  #incorrect file
 
    rm -rf $dir/$unzip_file
-   tar zxvf $file -C $dir | pv -L 1m >/dev/null 2>/dev/null || continue;
+   cat $file | pv -L 1m | tar zxvf - -C $dir || continue;
 
    find $dir/$unzip_file -type d -exec chmod 755 {} \;
    find $dir/$unzip_file -type f -exec chmod 644 {} \;
