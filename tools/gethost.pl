@@ -2,6 +2,7 @@
 use List::Util qw(min);
 use LWP::Simple;
 use warnings;
+
 $common_dir    = "/home/speech/.gethost/";
 $lock_file     = $common_dir . ".lock";
 $status_file   = $common_dir . $ENV{"USER"};
@@ -62,9 +63,13 @@ while($ret_host eq ""){
    }
    $now = time();
 
-   # get server status
-   $contents = get($available_url);
-   if(defined($contents)){
+   $SIG{ALRM} = sub { $timeout=1; };
+   alarm(1); 
+   eval{ $contents = get($available_url); };
+
+   if (defined($timeout)){
+      print STDERR "Time out on $available_url, use previous status...\n";
+   }else{
       $contents =~ s/\A.*?\n//g;
       foreach (split('\n', $contents)){
          @array = split('\t', $_);
