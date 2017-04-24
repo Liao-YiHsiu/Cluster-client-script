@@ -62,39 +62,6 @@ if [ ! -L /share ]; then
    chown speech:speech $dir_r/speech/share
 fi
 
-# -------------------------------------------------------
-# copy share data from NAS...
-find /share_tar/ -iname "*.tgz" -o -iname "*.gz" | while read file; do
-   target=${file/share_tar/share}
-   dir=$(dirname $target)
-   base=$(basename $target)
-   cache=$dir/.$base
-
-   if [ -e $cache ]; then
-      [ $(stat -c %Y $cache) -gt $(stat -c %Y $file) ] && continue;
-   fi
-   mkdir -p $dir
-   chown speech:speech $dir
-
-   unzip_file=$(tar -tf $file 2>/dev/null |head -n 1)
-   [ -z "$unzip_file" ] && continue;  #incorrect file
-
-   rm -rf $dir/$unzip_file
-   cat $file | pv -L 1m | tar zxvf - -C $dir || continue;
-
-   find $dir/$unzip_file -type d -exec chmod 755 {} \;
-   find $dir/$unzip_file -type f -exec chmod 644 {} \;
-   chown speech:speech -R $dir/$unzip_file
-
-   touch $cache
-done
-# -------------------------------------------------------
-
-
-
-# install all softwares
-(cd $curr_dir; ./install-all.sh) || exit -1
-
 # mount all other machines /home_local to /nfs
 hostlist=$(grep 192.168.100.1 /etc/hosts | cut -f2 -d' ' | grep -v Synology)
 for host in $hostlist;
@@ -124,6 +91,38 @@ do
       fi
    fi
 done
+
+# -------------------------------------------------------
+# copy share data from NAS...
+find /share_tar/ -iname "*.tgz" -o -iname "*.gz" | while read file; do
+   target=${file/share_tar/share}
+   dir=$(dirname $target)
+   base=$(basename $target)
+   cache=$dir/.$base
+
+   if [ -e $cache ]; then
+      [ $(stat -c %Y $cache) -gt $(stat -c %Y $file) ] && continue;
+   fi
+   mkdir -p $dir
+   chown speech:speech $dir
+
+   unzip_file=$(tar -tf $file 2>/dev/null |head -n 1)
+   [ -z "$unzip_file" ] && continue;  #incorrect file
+
+   rm -rf $dir/$unzip_file
+   cat $file | pv -L 10m | tar zxvf - -C $dir || continue;
+
+   find $dir/$unzip_file -type d -exec chmod 755 {} \;
+   find $dir/$unzip_file -type f -exec chmod 644 {} \;
+   chown speech:speech -R $dir/$unzip_file
+
+   touch $cache
+done
+# -------------------------------------------------------
+
+# install all softwares
+(cd $curr_dir; ./install-all.sh) || exit -1
+
 
 DOM=$(date +%-d)
 HOD=$(date +%-H)
@@ -158,7 +157,6 @@ if [ $DOM == 1 ] && [ $HOD == 4 ] ; then
    ## update Keras
    pip install --upgrade Keras
 fi
-
 
 rm -rf $tmp
 echo "routine success!"

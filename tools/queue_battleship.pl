@@ -28,7 +28,7 @@ $ignored_opts = ""; # These will be ignored.
 
 $num_threads = 1;  # default: single thread
 $gpu = 0;          # default: don't request gpu
-$host_list = ".*"; # default: all hosts
+$host_list = ""; # default: all hosts
 $no_log_file = 0;  # default: use logfile
 
 # use Data::Dumper;
@@ -39,7 +39,7 @@ usage: queue_battleship.pl [options] [JOB=1:10] log-file command-line arguments.
     --max-jobs-run <N> : number of jobs run concurrently. (default: $max_jobs_run)
     --gpu <N>          : number of GPUs required by each job. (default: $gpu)
     --num-threads <N>  : number of CPUs required by each job. (default: $num_threads)
-    --host-list "list" : submit jobs to assigned hosts (seperated by spaces, default: all hosts)
+    --host-list "list" : submit jobs to assigned hosts (seperated by ':', default: all hosts)
     --no-log-file      : skip log-file(in command), use stdin, stdout instead(jobs # = 1)
       
 END
@@ -197,7 +197,7 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
 
     $gethosttime = `date +'%s'`;
 
-    @array = split(' ', `gethost.pl $gpu $num_threads "$host_list"`);
+    @array = split(' ', `gethost.pl $gpu $num_threads $host_list`);
     $host   = $array[0];
     $gpu_id = $array[1];
 
@@ -252,7 +252,7 @@ for ($jobid = $jobstart; $jobid <= $jobend; $jobid++) {
           die "Failed to close the script file (full disk?)";
        }
 
-       $ret = system("ssh -t -q $host 'bash $queue_scriptfile'");
+       $ret = system("ssh -t -q $host 'while [ ! -e $queue_scriptfile ]; do sleep 1; done ; bash $queue_scriptfile'");
     }
 
 

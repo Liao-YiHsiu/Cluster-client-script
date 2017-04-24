@@ -21,7 +21,7 @@ $thread_num = $ARGV[1];
 $host_list = ".*";
 if(@ARGV == 3){
    $host_list  = $ARGV[2];
-   $host_list =~ s/\s/\|/g;
+   $host_list =~ s/:/\|/g;
 }
 
 $ret_host = "";
