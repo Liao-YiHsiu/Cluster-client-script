@@ -78,7 +78,6 @@ while($ret_host eq ""){
          $host = $array[0];
          $live_host{$host} = 1;
          $host_cpu_num = $array[1];
-         $stat{$host}{cpu_all} = $host_cpu_num;
 
          # initialize status
          if(not exists($stat{$host})){
@@ -100,6 +99,7 @@ while($ret_host eq ""){
             $stat{$host}{gpu0} = $array[3];
             $stat{$host}{gpu1} = $array[4];
          }
+         $stat{$host}{cpu_all} = $host_cpu_num;
       }
       # delete dead host...
       foreach my $key(sort keys %stat){
