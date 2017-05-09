@@ -63,6 +63,7 @@ while($ret_host eq ""){
    }
    $now = time();
 
+   undef $timeout;
    $SIG{ALRM} = sub { $timeout=1; };
    alarm(1); 
    eval{ $contents = get($available_url); };
@@ -71,9 +72,11 @@ while($ret_host eq ""){
       print STDERR "Time out on $available_url, use previous status...\n";
    }else{
       $contents =~ s/\A.*?\n//g;
+      %live_host=();
       foreach (split('\n', $contents)){
          @array = split('\t', $_);
          $host = $array[0];
+         $live_host{$host} = 1;
          $host_cpu_num = $array[1];
          $stat{$host}{cpu_all} = $host_cpu_num;
 
@@ -96,6 +99,13 @@ while($ret_host eq ""){
             $stat{$host}{cpus} = $array[2];
             $stat{$host}{gpu0} = $array[3];
             $stat{$host}{gpu1} = $array[4];
+         }
+      }
+      # delete dead host...
+      foreach my $key(sort keys %stat){
+         if(not exists($live_host{$key})){
+            print STDERR "$key is dead! remove it from the list...\n";
+            delete $stat{$key};
          }
       }
    }
