@@ -109,12 +109,12 @@ find /share_tar/ -iname "*.tgz" -o -iname "*.gz" | while read file; do
    unzip_file=$(tar -tf $file 2>/dev/null |head -n 1)
    [ -z "$unzip_file" ] && continue;  #incorrect file
 
-   rm -rf $dir/$unzip_file
+   rm -rf "$dir/$unzip_file"
    cat $file | pv -L 10m | tar zxvf - -C $dir || continue;
 
-   find $dir/$unzip_file -type d -exec chmod 755 {} \;
-   find $dir/$unzip_file -type f -exec chmod 644 {} \;
-   chown speech:speech -R $dir/$unzip_file
+   find "$dir/$unzip_file" -type d -exec chmod 755 {} \;
+   find "$dir/$unzip_file" -type f -exec chmod 644 {} \;
+   chown speech:speech -R "$dir/$unzip_file"
 
    touch $cache
 done
