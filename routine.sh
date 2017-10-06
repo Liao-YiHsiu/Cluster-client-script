@@ -24,7 +24,7 @@ done
 
 # update hosts
 # Synoloy ip = 192.168.100.97 - 192.168.100.100
-host_ip=$(ifconfig | grep 192 | tr -s ' ' | cut -d ' ' -f 3 | cut -d '.' -f4)
+host_ip=$(ifconfig | grep 192.168.100 | tr -s ' ' | cut -d ' ' -f 3 | cut -d '.' -f4)
 [ $host_ip == "" ] && host_ip=0
 syn_ip=$(( 100 - host_ip % 4 ))
 sed -e  "s/IP/$syn_ip/g" $curr_dir/hosts  > $tmp || exit -1;
